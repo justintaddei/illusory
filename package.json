@@ -12,6 +12,7 @@
     "test": "exit 0",
     "build": "rollup --config",
     "dev": "npm run build -- --watch",
+    "serve": "live-server ./demo --mount=/index.js:./dist/es/index.js --no-browser",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
