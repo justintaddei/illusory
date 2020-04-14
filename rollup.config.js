@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2';
+import typescript from 'rollup-plugin-typescript2'
 
 export default [
   {
@@ -9,9 +9,9 @@ export default [
     output: [
       {
         file: 'dist/es/index.js',
-        format: 'es',
-      },
-    ],
+        format: 'es'
+      }
+    ]
   },
   {
     input: './src/index.ts',
@@ -20,17 +20,17 @@ export default [
       typescript({
         tsconfigOverride: {
           compilerOptions: {
-            target: 'es3',
-          },
-        },
-      }),
+            target: 'es5'
+          }
+        }
+      })
     ],
 
     output: [
       {
         file: 'dist/cjs/index.js',
-        format: 'cjs',
-      },
-    ],
-  },
-];
+        format: 'cjs'
+      }
+    ]
+  }
+]
