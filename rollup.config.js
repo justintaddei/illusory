@@ -1,14 +1,24 @@
 import typescript from 'rollup-plugin-typescript2'
+import pkg from './package.json'
 
 export default [
   {
     input: './src/index.ts',
 
-    plugins: [typescript()],
+    plugins: [
+      typescript({
+        useTsconfigDeclarationDir: true,
+        tsconfigOverride: {
+          compilerOptions: {
+            declarationDir: pkg.types
+          }
+        }
+      })
+    ],
 
     output: [
       {
-        file: 'dist/es/index.js',
+        file: pkg.module,
         format: 'es'
       }
     ]
@@ -20,7 +30,8 @@ export default [
       typescript({
         tsconfigOverride: {
           compilerOptions: {
-            target: 'es5'
+            target: 'es5',
+            declaration: false
           }
         }
       })
@@ -28,8 +39,31 @@ export default [
 
     output: [
       {
-        file: 'dist/cjs/index.js',
+        file: pkg.main,
         format: 'cjs'
+      }
+    ]
+  },
+  {
+    input: './src/index.ts',
+
+    plugins: [
+      typescript({
+        tsconfigOverride: {
+          compilerOptions: {
+            target: 'es5',
+            declaration: false
+          }
+        }
+      })
+    ],
+
+    output: [
+      {
+        file: pkg.browser,
+        format: 'iife',
+        name: 'window',
+        extend: true
       }
     ]
   }

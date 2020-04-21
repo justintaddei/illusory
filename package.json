@@ -1,18 +1,19 @@
 {
-  "name": "npm-ts-template",
+  "name": "illusory",
   "version": "0.0.0",
-  "description": "A template typescript-based npm packages",
+  "description": "Seamlessly transform one element into another.",
   "main": "dist/cjs/index.js",
-  "esnext": "dist/es/index.js",
-  "types": "dist/es/index.d.ts",
+  "module": "dist/es/index.js",
+  "browser": "dist/iife/index.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "test": "exit 0",
+    "test": "jest",
     "build": "rollup --config",
     "dev": "npm run build -- --watch",
-    "serve": "live-server ./demo --mount=/index.js:./dist/es/index.js --no-browser",
+    "serve": "live-server ./demo --mount=/index.js:./dist/iife/index.js --no-browser",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
@@ -33,9 +34,12 @@
   },
   "homepage": "https://github.com/justintaddei/npm-ts-template#readme",
   "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "jest": "^25.3.0",
     "prettier": "^1.19.1",
     "rollup": "^2.6.0",
     "rollup-plugin-typescript2": "^0.27.0",
+    "ts-jest": "^25.3.1",
     "tslint": "^6.1.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3"
