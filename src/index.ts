@@ -82,4 +82,4 @@ async function illusory(
   if (needsWrapperElement) parent.remove()
 }
 
-export { illusory, IllusoryElement, IOptions }
+export { illusory, IllusoryElement }
