@@ -2,6 +2,17 @@
   "name": "illusory",
   "version": "0.0.0",
   "description": "Seamlessly transform one element into another.",
+  "keywords": [
+    "illusory",
+    "morph",
+    "transform",
+    "ramjet",
+    "shared element",
+    "morph element",
+    "transition",
+    "animation",
+    "element transition"
+  ],
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "browser": "dist/iife/index.js",
@@ -24,15 +35,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/justintaddei/npm-ts-template.git"
+    "url": "git+https://github.com/justintaddei/illusory.git"
   },
-  "keywords": [],
   "author": "Justin Taddei <justin@justintaddei.com> (https://justintaddei.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/justintaddei/npm-ts-template/issues"
+    "url": "https://github.com/justintaddei/illusory/issues"
   },
-  "homepage": "https://github.com/justintaddei/npm-ts-template#readme",
+  "homepage": "https://github.com/justintaddei/illusory#readme",
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "jest": "^25.3.0",
