@@ -76,13 +76,16 @@ export class IllusoryElement {
 
   constructor(
     el: HTMLElement,
-    options?: { includeChildren?: boolean; zIndex?: number; deltaHandlerOverrides?: IDeltaHandlerMap }
+    options?: { includeChildren?: boolean; zIndex?: number; deltaHandlers?: IDeltaHandlerMap }
   ) {
     // Apply delta overrides
-    if (options?.deltaHandlerOverrides)
-      for (const handler in options.deltaHandlerOverrides)
-        this.deltaHandlers[handler] = handler ? this.deltaHandlers[handler] : DELTA_PASS_THROUGH_HANDLER
+    if (options?.deltaHandlers)
+      for (const handler in options.deltaHandlers)
+        this.deltaHandlers[handler] = options.deltaHandlers[handler]
+          ? options.deltaHandlers[handler]
+          : DELTA_PASS_THROUGH_HANDLER
 
+    console.log('options?.deltaHandlers :', this.deltaHandlers)
     this.original = el
 
     // Save the current value of the style attribute for later

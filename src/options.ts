@@ -23,7 +23,7 @@ export interface IOptions {
    */
   easing: string
   zIndex: number
-  detlaHandlerOverrides?: IDeltaHandlerMap
+  detlaHandlers?: IDeltaHandlerMap
   beforeAttach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeAnimate?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeDetach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
