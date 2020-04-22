@@ -85,7 +85,6 @@ export class IllusoryElement {
           ? options.deltaHandlers[handler]
           : DELTA_PASS_THROUGH_HANDLER
 
-    console.log('options?.deltaHandlers :', this.deltaHandlers)
     this.original = el
 
     // Save the current value of the style attribute for later
