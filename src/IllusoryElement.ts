@@ -145,7 +145,7 @@ export class IllusoryElement {
   waitFor(property: string): Promise<void> {
     return new Promise(resolve => {
       const cb = (e: TransitionEvent) => {
-        if (property && e.propertyName !== property) return
+        if (property !== 'any' && e.propertyName !== property) return
 
         this.clone.removeEventListener('transitionend', cb)
         resolve()

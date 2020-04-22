@@ -69,7 +69,7 @@ async function illusory(
 
   if (needsWrapperElement) parent.style.opacity = endOpacity
 
-  await end.waitFor('transform')
+  await end.waitFor('any')
 
   // beforeAnimate hook
   if (typeof options?.beforeDetach === 'function') {
