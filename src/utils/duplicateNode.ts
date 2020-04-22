@@ -47,19 +47,7 @@ function copyStyles(source: HTMLElement, target: HTMLElement) {
 export default function duplicateNode(node: HTMLElement, includeChildren = false) {
   const clone = node.cloneNode(false) as typeof node
 
-  if (clone instanceof HTMLElement) {
-    /* TODO: confirm usage with svg elements
-
-        const width = node.style.width
-        const height = node.style.height
-
-        if (node instanceof SVGElement) {
-            clone.style.width = width
-            clone.style.height = height
-        }
-        
-    */
-
+  if (clone.nodeType === Node.ELEMENT_NODE) {
     if (includeChildren) node.childNodes.forEach(child => clone.appendChild(duplicateNode(child as HTMLElement, true)))
 
     copyStyles(node, clone)
