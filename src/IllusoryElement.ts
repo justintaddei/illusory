@@ -25,7 +25,7 @@ export class IllusoryElement {
   /**
    * The original `HTMLElement`
    */
-  private el: HTMLElement
+  original: HTMLElement
 
   /**
    * The copy of `IllusoryElement.el` that is used to morph
@@ -83,14 +83,14 @@ export class IllusoryElement {
       for (const handler in options.deltaHandlerOverrides)
         this.deltaHandlers[handler] = handler ? this.deltaHandlers[handler] : DELTA_PASS_THROUGH_HANDLER
 
-    this.el = el
+    this.original = el
 
     // Save the current value of the style attribute for later
-    this.initalStyleAttributeValue = this.el.getAttribute('style')
+    this.initalStyleAttributeValue = this.original.getAttribute('style')
 
-    this.rect = this.el.getBoundingClientRect()
+    this.rect = this.original.getBoundingClientRect()
 
-    this.clone = duplicateNode(this.el, options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren)
+    this.clone = duplicateNode(this.original, options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren)
 
     this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 
@@ -118,8 +118,8 @@ export class IllusoryElement {
     this.setStyle('height', this.rect.height)
 
     // Hide the "real" element
-    this.el.style.transition = 'none'
-    this.el.style.animation = 'none'
+    this.original.style.transition = 'none'
+    this.original.style.animation = 'none'
   }
   /**
    * Returns the orignal style value for `property`
@@ -168,13 +168,13 @@ export class IllusoryElement {
    * Sets the "real" element's opacity to 0
    */
   hideOriginal() {
-    this.el.style.opacity = '0'
+    this.original.style.opacity = '0'
   }
   /**
    * Sets the "real" element's opacity to 1
    */
   showOriginal() {
-    this.el.style.opacity = '1'
+    this.original.style.opacity = '1'
   }
 
   /**
@@ -195,8 +195,8 @@ export class IllusoryElement {
     this.flushCSS()
 
     // Reset `this.el' style attribute
-    if (!this.initalStyleAttributeValue) this.el.removeAttribute('style')
-    else this.el.setAttribute('style', this.initalStyleAttributeValue)
+    if (!this.initalStyleAttributeValue) this.original.removeAttribute('style')
+    else this.original.setAttribute('style', this.initalStyleAttributeValue)
 
     this.clone.remove()
   }
