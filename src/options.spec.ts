@@ -3,7 +3,7 @@ import { DEFAULT_OPTIONS } from './options'
 // To make sure they aren't accidentally changed
 it('Has the documented default options', () => {
   expect(DEFAULT_OPTIONS).toEqual({
-    includeChildren: false,
+    includeChildren: true,
     duration: '300ms',
     easing: 'ease',
     zIndex: 1,
