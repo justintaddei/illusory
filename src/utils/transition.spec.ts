@@ -10,7 +10,7 @@ describe('Builds correct transition string', () => {
         includeChildren: false,
         zIndex: 1
       })
-    ).toBe('transform 3s ease-in-out 0s, opacity 3s ease-in-out 0s, border-radius 3s ease-in-out 0s')
+    ).toBe('all 3s ease-in-out 0s')
   })
   it('works when IOptions.compositeOnly = true', () => {
     expect(
