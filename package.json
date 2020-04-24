@@ -24,8 +24,10 @@
   "scripts": {
     "test": "jest",
     "build": "rollup --config",
+    "build:docs": "tsc ./docs/index.js --out ./docs/index.es5.js --allowJs --lib es2015",
     "dev": "npm run build -- --watch",
-    "serve": "live-server ./demo --mount=/index.js:./dist/iife/index.js --no-browser",
+    "dev:docs": "npm run build:docs -- --watch",
+    "serve": "live-server ./docs --mount=/illusory.js:./dist/iife/index.js --no-browser",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
@@ -47,6 +49,7 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "jest": "^25.3.0",
+    "live-server": "^1.2.1",
     "prettier": "^1.19.1",
     "rollup": "^2.6.0",
     "rollup-plugin-typescript2": "^0.27.0",
