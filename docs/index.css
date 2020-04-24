@@ -48,16 +48,16 @@ h1 {
 }
 
 .first-demo {
-  display: flex;
-  /* display: grid; */
-  /* grid-template: 1fr 1fr / 1fr 1fr; */
+  /* display: flex; */
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
   justify-items: center;
   align-items: center;
 }
 
-/* .first-demo > * {
+.first-demo > * {
   margin: 20px 0;
-} */
+}
 
 .first-demo--1 {
   padding: 15px;

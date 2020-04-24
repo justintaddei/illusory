@@ -239,8 +239,6 @@
             this.setStyle('position', 'fixed');
             this.setStyle('left', this.rect.left + "px");
             this.setStyle('top', this.rect.top + "px");
-            this.setStyle('width', this.rect.width + "px");
-            this.setStyle('height', this.rect.height + "px");
             this.natural.style.transition = 'none';
             this.natural.style.animation = 'none';
             console.log('this.clone :', this.clone);
