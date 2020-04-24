@@ -10,6 +10,6 @@ it('Correctly handles transform', () => {
   }
 
   expect(transformHandler(delta as IDelta)).toBe(
-    `translate(${delta.x}px,${delta.y}px) scale(${delta.scaleX}, ${delta.scaleY})`
+    `translate3d(${delta.x}px,${delta.y}px, 0) scale(${delta.scaleX}, ${delta.scaleY})`
   )
 })
