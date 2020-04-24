@@ -65,6 +65,13 @@ export class IllusoryElement {
   }
 
   /**
+   * Removes the CSS transitions
+   */
+  _disableTransitions() {
+    this.setStyle('transition', 'none')
+  }
+
+  /**
    * Appends `this.clone` as a child of `element`
    * and hides the "real" element
    * @param element The parent element
@@ -143,8 +150,11 @@ export class IllusoryElement {
    */
   waitFor(property: string): Promise<void> {
     return new Promise(resolve => {
-      const cb = (e: TransitionEvent) => {
+      const cb = async (e: TransitionEvent) => {
         if (property !== 'any' && e.propertyName !== property) return
+
+        // Wait a from so any other transitionend events have time to fire
+        if (property === 'any') await new Promise(resolve => requestAnimationFrame(resolve))
 
         this.clone.removeEventListener('transitionend', cb)
         resolve()

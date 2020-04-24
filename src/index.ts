@@ -86,8 +86,10 @@ async function illusory(
 
   await end.waitFor('any')
 
-  // beforeAnimate hook
   if (typeof options?.beforeDetach === 'function') {
+    start._disableTransitions()
+    end._disableTransitions()
+    start.hide()
     await Promise.resolve(options.beforeDetach(start, end))
   }
 
