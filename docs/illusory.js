@@ -223,7 +223,6 @@
             this.initalStyleAttributeValue = this.natural.getAttribute('style');
             this.rect = this.natural.getBoundingClientRect();
             console.log('constructor');
-            debugger;
             this.clone = duplicateNode(this.natural, (_a = options === null || options === void 0 ? void 0 : options.includeChildren) !== null && _a !== void 0 ? _a : DEFAULT_OPTIONS.includeChildren);
             this.setStyle('zIndex', (_b = options === null || options === void 0 ? void 0 : options.zIndex) !== null && _b !== void 0 ? _b : DEFAULT_OPTIONS.zIndex);
             this.setStyle('opacity', '1');
