@@ -25,7 +25,7 @@ export class IllusoryElement {
   /**
    * The original `HTMLElement`
    */
-  original: HTMLElement
+  natural: HTMLElement
 
   /**
    * The copy of `IllusoryElement.el` that is used to morph
@@ -70,34 +70,34 @@ export class IllusoryElement {
    * @param element The parent element
    */
   _setParent(element: HTMLElement) {
-    this.hideOriginal()
+    this.hideNatural()
     element.appendChild(this.clone)
   }
 
   constructor(
     el: HTMLElement,
-    options?: { includeChildren?: boolean; zIndex?: number; deltaHandlers?: IDeltaHandlerMap }
+    options?: { includeChildren?: boolean; zIndex?: number; deltaHandlers?: IOptions['deltaHandlers'] }
   ) {
     // Apply delta overrides
-    if (options?.deltaHandlers)
-      for (const handler in options.deltaHandlers)
-        this.deltaHandlers[handler] = options.deltaHandlers[handler]
-          ? options.deltaHandlers[handler]
-          : DELTA_PASS_THROUGH_HANDLER
+    if (options?.deltaHandlers) {
+      for (const prop in options.deltaHandlers) {
+        const handler = options.deltaHandlers[prop]
+        this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
+      }
+    }
 
-    this.original = el
+    this.natural = el
 
     // Save the current value of the style attribute for later
-    this.initalStyleAttributeValue = this.original.getAttribute('style')
+    this.initalStyleAttributeValue = this.natural.getAttribute('style')
 
-    this.rect = this.original.getBoundingClientRect()
+    this.rect = this.natural.getBoundingClientRect()
 
-    this.clone = duplicateNode(this.original, options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren)
+    this.clone = duplicateNode(this.natural, options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren)
 
     this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 
     // Prepare the style for the clone
-    this.setStyle('contain', 'strict')
     this.setStyle('opacity', '1')
     this.setStyle('left', 'auto')
     this.setStyle('right', 'auto')
@@ -120,8 +120,8 @@ export class IllusoryElement {
     this.setStyle('height', this.rect.height)
 
     // Hide the "real" element
-    this.original.style.transition = 'none'
-    this.original.style.animation = 'none'
+    this.natural.style.transition = 'none'
+    this.natural.style.animation = 'none'
   }
   /**
    * Returns the orignal style value for `property`
@@ -169,14 +169,14 @@ export class IllusoryElement {
   /**
    * Sets the "real" element's opacity to 0
    */
-  hideOriginal() {
-    this.original.style.opacity = '0'
+  hideNatural() {
+    this.natural.style.opacity = '0'
   }
   /**
    * Sets the "real" element's opacity to 1
    */
-  showOriginal() {
-    this.original.style.opacity = '1'
+  showNatural() {
+    this.natural.style.opacity = '1'
   }
 
   /**
@@ -191,14 +191,14 @@ export class IllusoryElement {
    * Clean up and finish the transition
    */
   detach() {
-    this.showOriginal()
+    this.showNatural()
 
     // Make sure that if `this.el` has a transition on opacity, it isn't applied until after the opacity is reset
     this.flushCSS()
 
     // Reset `this.el' style attribute
-    if (!this.initalStyleAttributeValue) this.original.removeAttribute('style')
-    else this.original.setAttribute('style', this.initalStyleAttributeValue)
+    if (!this.initalStyleAttributeValue) this.natural.removeAttribute('style')
+    else this.natural.setAttribute('style', this.initalStyleAttributeValue)
 
     this.clone.remove()
   }
