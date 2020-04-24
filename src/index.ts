@@ -23,6 +23,21 @@ async function illusory(
     ...DEFAULT_OPTIONS,
     ...options
   }
+  if (completeOptions.compositeOnly) {
+    if (!completeOptions.deltaHandlers) completeOptions.deltaHandlers = {}
+
+    const nonCompositeProperties = [
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomLeftRadius',
+      'borderBottomRightRadius'
+    ]
+
+    // Don't override user-provided handlers
+    for (const prop of nonCompositeProperties)
+      if (!completeOptions.deltaHandlers?.[prop]) completeOptions.deltaHandlers[prop] = false
+  }
+
   // Convert the `HTMLElement` to Illusory if needed.
   const start = createIllusoryElement(from, completeOptions)
   const end = createIllusoryElement(to, completeOptions)
@@ -34,7 +49,7 @@ async function illusory(
   // or there will be a "pop" at the start and end
   const needsWrapperElement = startOpacity !== '1' || endOpacity !== '1'
 
-  let parent = needsWrapperElement ? createOpacityWrapper(startOpacity, completeOptions) : document.body
+  const parent = needsWrapperElement ? createOpacityWrapper(startOpacity, completeOptions) : document.body
 
   // beforeAnimate hook
   if (typeof options?.beforeAttach === 'function') {
@@ -64,7 +79,7 @@ async function illusory(
   // background, we have to fade out the `start` element because otherwise it will be visible
   // until it is removed from the dom causing a weird
   // "pop" effect.
-  if (end._hasTransparentBackground()) start.hide()
+  if (end._hasTransparentBackground() || completeOptions.compositeOnly) start.hide()
   end.show()
 
   if (needsWrapperElement) parent.style.opacity = endOpacity
