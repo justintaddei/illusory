@@ -32,6 +32,9 @@ Seamlessly morph one element into another. [**Demo**](https://justintaddei.githu
 ## Installation
 
 ```html
+<!-- For IE support -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
 <script src="https://unpkg.com/illusory"></script>
 
 <script>
