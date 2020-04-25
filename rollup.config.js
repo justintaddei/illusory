@@ -1,5 +1,6 @@
 import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
+import { uglify } from 'rollup-plugin-uglify'
 
 export default [
   {
@@ -54,6 +55,12 @@ export default [
             target: 'es5',
             declaration: false
           }
+        }
+      }),
+      uglify({
+        sourcemap: false,
+        output: {
+          comments: 'all'
         }
       })
     ],
