@@ -88,8 +88,10 @@ export class IllusoryElement {
     // Apply delta overrides
     if (options?.deltaHandlers) {
       for (const prop in options.deltaHandlers) {
-        const handler = options.deltaHandlers[prop]
-        this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
+        if (options.deltaHandlers.hasOwnProperty(prop)) {
+          const handler = options.deltaHandlers[prop]
+          this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
+        }
       }
     }
 
@@ -149,7 +151,7 @@ export class IllusoryElement {
         if (property !== 'any' && e.propertyName !== property) return
 
         // Wait a from so any other transitionend events have time to fire
-        if (property === 'any') await new Promise(resolve => requestAnimationFrame(resolve))
+        if (property === 'any') await new Promise(r => requestAnimationFrame(r))
 
         this.clone.removeEventListener('transitionend', cb)
         resolve()
