@@ -1,13 +1,13 @@
 # illusory <!-- omit in toc -->
 
-![](https://img.shields.io/github/workflow/status/justintaddei/illusory/Tests/master?logo=github)
-![](https://img.shields.io/github/issues-raw/justintaddei/illusory.svg?style=flat)
-![](https://img.shields.io/npm/v/illusory.svg?style=flat)
-![](https://img.shields.io/npm/dt/illusory.svg?style=flat)
-![](https://img.shields.io/npm/l/illusory.svg?style=flat)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
-![](https://img.shields.io/github/languages/top/justintaddei/illusory.svg?colorB=blue&style=flat)
-![](https://img.shields.io/badge/status-awesome-red.svg?style=flat)
+![GitHub build status](https://img.shields.io/github/workflow/status/justintaddei/illusory/Tests/master?logo=github)
+![Open issues](https://img.shields.io/github/issues-raw/justintaddei/illusory.svg?style=flat)
+![npm version](https://img.shields.io/npm/v/illusory.svg?style=flat)
+![downloads](https://img.shields.io/npm/dt/illusory.svg?style=flat&label=npm+installs)
+![license](https://img.shields.io/npm/l/illusory.svg?style=flat)
+![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)
+![Top language](https://img.shields.io/github/languages/top/justintaddei/illusory.svg?colorB=blue&style=flat)
+![Status](https://img.shields.io/badge/status-awesome-red.svg?style=flat)
 
 Seamlessly morph one element into another. [**Demo**](https://justintaddei.github.io/illusory/)
 
