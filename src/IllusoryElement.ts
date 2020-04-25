@@ -121,11 +121,6 @@ export class IllusoryElement {
     this.setStyle('left', `${this.rect.left}px`)
     this.setStyle('top', `${this.rect.top}px`)
 
-    // Fix for IE when the element has padding.
-    // It doesn't break anything so we'll do it everytime
-    this.setStyle('width', this.rect.width)
-    this.setStyle('height', this.rect.height)
-
     // Hide the "real" element
     this.natural.style.transition = 'none'
     this.natural.style.animation = 'none'
