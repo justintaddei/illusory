@@ -67,7 +67,7 @@ export default [
 
     output: [
       {
-        file: pkg.browser,
+        file: pkg.unpkg,
         format: 'iife',
         name: 'window',
         extend: true
