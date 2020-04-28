@@ -16,7 +16,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/types/",
   "files": [
     "dist/**/*"
   ],
