@@ -1,3 +1,10 @@
+export type FilterFunction = (attributeName: string) => boolean
+
+interface ICloneOptions {
+  includeChildren?: boolean
+  preserveDataAttributes?: boolean | FilterFunction
+}
+
 /**
  * Converts a string in camelCase to kebab-case
  */
@@ -11,13 +18,16 @@ function toKebab(str: string) {
 /**
  * Removes any attributes that might have negative effects
  */
-function cleanAttributes(element: HTMLElement) {
+function filterDataAttributes(element: HTMLElement, filterFunction?: false | FilterFunction) {
   // Some data-* attributes can cause problems when cloning elements
   // (e.g.Vue's data-v attributes)
-  Object.keys(element.dataset).forEach(key => element.removeAttribute(`data-${toKebab(key)}`))
+  Object.keys(element.dataset).forEach(key => {
+    const attr = `data-${toKebab(key)}`
 
-  element.removeAttribute('class')
-  element.removeAttribute('id')
+    if (attr.indexOf('data-illusory') === 0) return
+
+    if (!filterFunction || !filterFunction(attr)) element.removeAttribute(attr)
+  })
 }
 
 /**
@@ -44,15 +54,16 @@ function copyStyles(source: HTMLElement, target: HTMLElement) {
  * Clones an element, with it's computed styles applied inline, and optionally it's childen
  * @param includeChildren Whether or not to also include the `element`s children
  */
-export default function duplicateNode(node: HTMLElement, includeChildren = false) {
+export function duplicateNode(node: HTMLElement, options: ICloneOptions) {
   const clone = node.cloneNode(false) as typeof node
 
   if (clone.nodeType === Node.ELEMENT_NODE) {
-    if (includeChildren) node.childNodes.forEach(child => clone.appendChild(duplicateNode(child as HTMLElement, true)))
+    if (options.includeChildren)
+      node.childNodes.forEach(child => clone.appendChild(duplicateNode(child as HTMLElement, options)))
 
     copyStyles(node, clone)
 
-    cleanAttributes(clone)
+    if (options.preserveDataAttributes !== true) filterDataAttributes(clone, options.preserveDataAttributes)
   }
 
   return clone

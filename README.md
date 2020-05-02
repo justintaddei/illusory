@@ -61,7 +61,7 @@ illusory(from, to)
 
 
 ## API Details
-> **Note:** See the [docs page](https://justintaddei.github.io/illusory/) for a friendlier introduction.
+> See the [docs page](https://justintaddei.github.io/illusory/) for an introduction with examples.
 
 
 ### illusory(from, to [, options]): Promise
@@ -70,46 +70,81 @@ illusory(from, to)
 - `to` — an `Element` or an `IllusoryElement`
 - `options` — `Object` (see table below)
 
-| option          | type     | default   |
-| --------------- | -------- | --------- |
-| includeChildren | boolean  | true      |
-| compositeOnly   | boolean  | false     |
-| duration        | string   | 300ms     |
-| easing          | string   | ease      |
-| zIndex          | number   | 1         |
-| deltaHandlers   | Object   | undefined |
-| beforeAttach    | Function | undefined |
-| beforeAnimate   | Function | undefined |
-| beforeDetach    | Function | undefined |
+| option                 | type                | default   |
+| ---------------------- | ------------------- | --------- |
+| includeChildren        | boolean             | true      |
+| compositeOnly          | boolean             | false     |
+| duration               | string              | 300ms     |
+| easing                 | string              | ease      |
+| zIndex                 | number              | 1         |
+| deltaHandlers          | Object              | undefined |
+| beforeAttach           | Function            | undefined |
+| beforeAnimate          | Function            | undefined |
+| beforeDetach           | Function            | undefined |
+| preserveDataAttributes | Function \| Boolean | false     |
+
+> **Important**  
+> Options that are also available for `IllusoryElement` will not apply to `IllusoryElement`s when passed to `illusory`  
+> For example:  
+> In the following snippet, `from` **will** include all of its children because `includeChildren` defaults to `true`. However, `to` will **not** include _its_ children.  
+```js
+const from = new IllusoryElement(el)
+
+const to = document.querySelector('#to')
+
+illusory(from, to, {
+  includeChildren: false
+})
+
+```
 
 ### IllusoryElement(el [, options])
 
 - `el` — `Element`
 - `options` — `Object` (see table below)
 
-| option          | type    | default   |
-| --------------- | ------- | --------- |
-| includeChildren | boolean | true      |
-| zIndex          | number  | 1         |
-| deltaHandlers   | Object  | undefined |
+| option                 | type                | default   |
+| ---------------------- | ------------------- | --------- |
+| includeChildren        | boolean             | true      |
+| zIndex                 | number              | 1         |
+| deltaHandlers          | Object              | undefined |
+| preserveDataAttributes | Function \| Boolean | false     |
 
 #### Properties
 
-- `natural` — `Element`
-- `clone` — `Element`
-- `rect` — `DOMRect`
+- `natural`: `Element` — The original element.
+- `clone`: `Element` — The clone of the "natural" element.
+- `rect`: `DOMRect` — The bounding box of the "natural" element.
   
 #### Methods
 
-- `setStyle(property: string, value: string)`
-- `getStyle(property: string): string`
-- `waitFor(property: string): Promise`
-- `hide()`
-- `show()`
-- `hideNatural()`
-- `showNatural()`
-- `flushCSS()`
-- `detach()`
+- `setStyle(property: string, value: string)` — Sets the given css style on the cloned element.
+  > Changes made using this method will not be reflected by `getStyle`.
+  ```js
+  // If the background is white
+  illusoryEl.clone.style.backgroundColor // #fff
+  // And we set it to black with `getStyle`
+  illusoryEl.setStyle('backgroundColor', '#000')
+  // The color will be reflected be the DOM
+  illusoryEl.clone.style.backgroundColor // #000
+  // But not by `getStyle`. It will still return white
+  illusoryEl.getStyle('backgroundColor') // #fff
+  ```
+
+- `getStyle(property: string): string` — Returns the orignal style value for the given property.  
+  > **Note:** Because `window.getComputedStyle` is used under the hood, CSS shorthand properties are not supported (background, border-radius, etc.). Instead use background-color, background-image, border-bottom-right-radius, etc.
+
+- `waitFor(property: string): Promise` —  
+  Returns a `Promise` that resolves when the cloned element emits a `"transitionend"` event for the given `property`.  
+  If `"any"` is passed, the promise will resolve on the first `"transitionend"` regardless of the transitioned property.
+
+- `hide()` — Hides the cloned element
+- `show()` — Shows the cloned element
+- `hideNatural()` — Hides the natural element
+- `showNatural()` — Shows the natural element
+- `flushCSS()` — Forces the browser to apply any style changes that might be queued.
+  > Useful for applying any css changes before setting a transition on the element.
+- `detach()` — Removes the clone and cleans up styles applied to the natural element.
 
 
 ## Contributing
