@@ -3,9 +3,16 @@ import { DELTA_PASS_THROUGH_HANDLER, getDelta, IDeltaHandlerMap } from './deltaH
 import transformHandler from './deltaHandlers/transformHandler'
 import { DEFAULT_OPTIONS, IOptions } from './options'
 import { parseRGBA } from './parsers/parseRGBA'
-import duplicateNode from './utils/duplicateNode'
+import { duplicateNode, FilterFunction } from './utils/duplicateNode'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 import { buildTransitionString } from './utils/transition'
+
+interface IIllusoryElementOptions {
+  includeChildren?: boolean
+  zIndex?: number
+  deltaHandlers?: IOptions['deltaHandlers']
+  preserveDataAttributes?: boolean | FilterFunction
+}
 
 export class IllusoryElement {
   private initalStyleAttributeValue?: string | null
@@ -81,10 +88,7 @@ export class IllusoryElement {
     element.appendChild(this.clone)
   }
 
-  constructor(
-    el: HTMLElement,
-    options?: { includeChildren?: boolean; zIndex?: number; deltaHandlers?: IOptions['deltaHandlers'] }
-  ) {
+  constructor(el: HTMLElement, options?: IIllusoryElementOptions) {
     // Apply delta overrides
     if (options?.deltaHandlers) {
       for (const prop in options.deltaHandlers) {
@@ -102,7 +106,10 @@ export class IllusoryElement {
 
     this.rect = this.natural.getBoundingClientRect()
 
-    this.clone = duplicateNode(this.natural, options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren)
+    this.clone = duplicateNode(this.natural, {
+      includeChildren: options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren,
+      preserveDataAttributes: options?.preserveDataAttributes
+    })
 
     this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 

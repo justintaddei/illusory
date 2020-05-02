@@ -1,5 +1,6 @@
 import { DeltaHandlerFunction } from './deltaHandlers/delta'
 import { IllusoryElement } from './IllusoryElement'
+import { FilterFunction } from './utils/duplicateNode'
 
 export interface IOptions {
   /**
@@ -24,6 +25,10 @@ export interface IOptions {
    * @default "ease"
    */
   easing: string
+  /**
+   * The `z-index` of the clones
+   * @default 1
+   */
   zIndex: number
   deltaHandlers?: {
     [property: string]: DeltaHandlerFunction | false
@@ -31,6 +36,13 @@ export interface IOptions {
   beforeAttach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeAnimate?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeDetach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
+  /**
+   * If `false` all `data-*` attributes are removed.
+   * Can also be a function that returns `true` if the attribute should be preserved.
+   * All `data-illusory-*` attributes are always preserved.
+   * @default false
+   */
+  preserveDataAttributes?: boolean | FilterFunction
 }
 
 export const DEFAULT_OPTIONS: IOptions = {
