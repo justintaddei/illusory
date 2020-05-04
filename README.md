@@ -15,11 +15,16 @@ Seamlessly morph one element into another. [**Demo**](https://justintaddei.githu
 
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
-- [API Details](#api-details)
+- [API Overview](#api-overview)
   - [illusory(from, to [, options]): Promise](#illusoryfrom-to--options-promise)
   - [IllusoryElement(el [, options])](#illusoryelementel--options)
     - [Properties](#properties)
     - [Methods](#methods)
+- [Advanced](#advanced)
+  - [deltaHandlers](#deltahandlers)
+    - [DeltaHandlerFunction(delta, deltaStyle, thisStyle)](#deltahandlerfunctiondelta-deltastyle-thisstyle)
+  - [preserveDataAttributes](#preservedataattributes)
+  - [processClone(node: Node, depth: number): Node | void](#processclonenode-node-depth-number-node--void)
 - [Contributing](#contributing)
   - [Setup](#setup)
   - [Development](#development)
@@ -60,7 +65,7 @@ illusory(from, to)
 ```
 
 
-## API Details
+## API Overview
 > See the [docs page](https://justintaddei.github.io/illusory/) for an introduction with examples.
 
 
@@ -70,18 +75,19 @@ illusory(from, to)
 - `to` — an `Element` or an `IllusoryElement`
 - `options` — `Object` (see table below)
 
-| option                 | type                | default   |
-| ---------------------- | ------------------- | --------- |
-| includeChildren        | boolean             | true      |
-| compositeOnly          | boolean             | false     |
-| duration               | string              | 300ms     |
-| easing                 | string              | ease      |
-| zIndex                 | number              | 1         |
-| deltaHandlers          | Object              | undefined |
-| beforeAttach           | Function            | undefined |
-| beforeAnimate          | Function            | undefined |
-| beforeDetach           | Function            | undefined |
-| preserveDataAttributes | Function \| Boolean | false     |
+| option                 | type                                                               | default     |
+| ---------------------- | ------------------------------------------------------------------ | ----------- |
+| includeChildren        | `boolean`                                                          | `true`      |
+| compositeOnly          | `boolean`                                                          | `false`     |
+| duration               | `string` (e.g. `0.5s`, `200ms`, etc.)                              | `300ms`     |
+| easing                 | `string` (e.g. `ease-in-out`, `cubic-bezier(.29, 1.01, 1, -0.68)`) | `ease`      |
+| zIndex                 | `number`                                                           | `1`         |
+| deltaHandlers          | `Object` _(see [Advanced](#advanced))_                             | `undefined` |
+| beforeAttach           | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
+| beforeAnimate          | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
+| beforeDetach           | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
+| preserveDataAttributes | `Function` \| Boolean _(see [Advanced](#advanced))_                | `false`     |
+| processClone           | `Function` _(see [Advanced](#advanced))_                           | `false`     |
 
 > **Important**  
 > Options that are also available for `IllusoryElement` will not apply to `IllusoryElement`s when passed to `illusory`  
@@ -109,6 +115,7 @@ illusory(from, to, {
 | zIndex                 | number              | 1         |
 | deltaHandlers          | Object              | undefined |
 | preserveDataAttributes | Function \| Boolean | false     |
+| processClone           | Function            | undefined |
 
 #### Properties
 
@@ -146,6 +153,74 @@ illusory(from, to, {
   > Useful for applying any css changes before setting a transition on the element.
 - `detach()` — Removes the clone and cleans up styles applied to the natural element.
 
+
+## Advanced
+
+### deltaHandlers
+
+An object where the keys are css properties and the values are either false (disabled) or a function that returns a new value for the repective property.
+
+For example, the following snippet disables the handlers for transform and border-top-left-radius and creates a new handler for background-color that always returns "red".
+
+While this example is not very practical, it illustrates how easily deltaHandlers can be used to change the look of the animation.
+
+```js
+illusory(from, to, {
+  deltaHandlers: {
+    transform: false,
+    borderTopLeftRadius: false,
+    backgroundColor(delta, deltaStyle, thisStyle) {
+        return 'red'
+    }
+  }
+})
+```
+
+#### DeltaHandlerFunction(delta, deltaStyle, thisStyle)
+- `delta`
+  -  `x`: number — The left edge of the "other" element.
+  -  `y`: number — The top edge of the "other" element.
+  -  `scaleX`: number — The difference in horizontal size between this element and the "other."
+  -  `scaleY`: number — The difference in vertical size between this element and the "other."
+  -  `inverseScaleX`: number — The difference in horizontal size between the "other" element and this one. 
+  -  `inverseScaleY`: number — The difference in vertical size between the "other" element and this one.
+-  `deltaStyle` — The computed style for the given property of other element. 
+-  `thisStyle` — The computed style for the given property of this element. 
+
+### preserveDataAttributes
+
+By default, all data-* attributes are removed from the cloned elements to prevent issues with some front-end frameworks.
+If you need to preserve some or all of those attributes you can define a filter function that returns `true` for any attribute that should be preserved.
+
+> **Note:**  
+> if you only need to keep some data with the element after it's cloned (e.g. to access it in `processClone`) you can use any `data-illusory[-*]` attribute because they are **always** preserved.
+```js
+  new IllusoryElement(el, {
+    // Preserve all data-* attributes
+    preserveDataAttributes: true
+
+    // Preserve all data-mydata[-*] attributes
+    preserveDataAttributes: (attrName) => attrName.startsWith('data-mydata') 
+  })
+```
+
+### processClone(node: Node, depth: number): Node | void
+
+A function that, if defined, is called for every clone, and `ChildNode` of that clone before the animation begins and before any hooks. 
+
+```js
+new IllusoryElement(el, {
+  preserveDataAttributes: attr => attr === 'data-hide-from-animation',
+
+  processClone(node, depth) {
+    console.log(node.parentNode) // `undefined` because processClone starts from the deepest node in the tree.
+
+    if (depth > 0) // Make sure this isn't the root node (e.i. the clone of `el`)
+      if (node.dataset.hideFromAnimation) // Hide some elements from the animation
+        node.style.opacity = '0'  
+  }
+})
+```
 
 ## Contributing
 
