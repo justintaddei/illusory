@@ -21,7 +21,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest --no-cache",
     "build": "rollup --config",
     "build:docs": "tsc ./docs/index.js --out ./docs/index.es5.js --allowJs --lib es2015",
     "dev": "npm run build -- --watch",
