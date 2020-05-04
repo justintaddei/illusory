@@ -19,7 +19,7 @@ describe('includeChildren works', () => {
     it('includes the children', () => {
       const dup = duplicateNode(el, {
         includeChildren: true
-      })
+      }) as HTMLElement
 
       const p = dup.querySelector('p')
 
@@ -28,7 +28,7 @@ describe('includeChildren works', () => {
     it('copies the styles for the children', () => {
       const dup = duplicateNode(el, {
         includeChildren: true
-      })
+      }) as HTMLElement
 
       const p = dup.querySelector('p') as HTMLParagraphElement
 
@@ -39,7 +39,7 @@ describe('includeChildren works', () => {
   it('does not includes any children when false', () => {
     const dup = duplicateNode(el, {
       includeChildren: false
-    })
+    }) as HTMLElement
 
     const p = dup.querySelector('p')
 
@@ -54,7 +54,7 @@ describe('preserveDataAttributes works', () => {
     const dup = duplicateNode(el, {
       includeChildren: true,
       preserveDataAttributes: false
-    })
+    }) as HTMLElement
 
     const p = dup.querySelector('p') as HTMLParagraphElement
 
@@ -67,7 +67,7 @@ describe('preserveDataAttributes works', () => {
     const dup = duplicateNode(el, {
       includeChildren: true,
       preserveDataAttributes: true
-    })
+    }) as HTMLElement
 
     const p = dup.querySelector('p') as HTMLParagraphElement
 
@@ -82,7 +82,7 @@ describe('preserveDataAttributes works', () => {
     const dup = duplicateNode(el, {
       includeChildren: true,
       preserveDataAttributes: attr => attr.includes('also')
-    })
+    }) as HTMLElement
 
     const p = dup.querySelector('p') as HTMLParagraphElement
 

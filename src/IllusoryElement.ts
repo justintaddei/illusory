@@ -3,7 +3,7 @@ import { DELTA_PASS_THROUGH_HANDLER, getDelta, IDeltaHandlerMap } from './deltaH
 import transformHandler from './deltaHandlers/transformHandler'
 import { DEFAULT_OPTIONS, IOptions } from './options'
 import { parseRGBA } from './parsers/parseRGBA'
-import { duplicateNode, FilterFunction } from './utils/duplicateNode'
+import { CloneProcessorFunction, duplicateNode, FilterFunction } from './utils/duplicateNode'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 import { buildTransitionString } from './utils/transition'
 
@@ -12,6 +12,7 @@ interface IIllusoryElementOptions {
   zIndex?: number
   deltaHandlers?: IOptions['deltaHandlers']
   preserveDataAttributes?: boolean | FilterFunction
+  processClone?: CloneProcessorFunction
 }
 
 export class IllusoryElement {
@@ -30,14 +31,14 @@ export class IllusoryElement {
   }
 
   /**
-   * The original `HTMLElement`
+   * The original element
    */
-  natural: HTMLElement
+  natural: HTMLElement | SVGElement
 
   /**
    * The copy of `IllusoryElement.el` that is used to morph
    */
-  clone: HTMLElement
+  clone: HTMLElement | SVGElement
 
   /**
    * The BoundingClientRect of `this.el`
@@ -83,12 +84,12 @@ export class IllusoryElement {
    * and hides the "real" element
    * @param element The parent element
    */
-  _setParent(element: HTMLElement) {
+  _setParent(element: HTMLElement | SVGElement) {
     this.hideNatural()
     element.appendChild(this.clone)
   }
 
-  constructor(el: HTMLElement, options?: IIllusoryElementOptions) {
+  constructor(el: HTMLElement | SVGElement, options?: IIllusoryElementOptions) {
     // Apply delta overrides
     if (options?.deltaHandlers) {
       for (const prop in options.deltaHandlers) {
@@ -108,8 +109,9 @@ export class IllusoryElement {
 
     this.clone = duplicateNode(this.natural, {
       includeChildren: options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren,
-      preserveDataAttributes: options?.preserveDataAttributes
-    })
+      preserveDataAttributes: options?.preserveDataAttributes,
+      processClone: options?.processClone
+    }) as HTMLElement | SVGElement
 
     this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 
@@ -155,16 +157,16 @@ export class IllusoryElement {
   waitFor(property: string): Promise<void> {
     return new Promise(resolve => {
       const cb = async (e: TransitionEvent) => {
-        if (property !== 'any' && e.propertyName !== property) return
+          if (property !== 'any' && e.propertyName !== property) return
 
-        // Wait a from so any other transitionend events have time to fire
-        if (property === 'any') await new Promise(r => requestAnimationFrame(r))
+          // Wait a from so any other transitionend events have time to fire
+          if (property === 'any') await new Promise(r => requestAnimationFrame(r))
+          ;(this.clone as HTMLElement).removeEventListener('transitionend', cb)
+          resolve()
+        }
 
-        this.clone.removeEventListener('transitionend', cb)
-        resolve()
-      }
-
-      this.clone.addEventListener('transitionend', cb)
+        // TODO figure out why TypeScript is complaining about this event listener
+      ;(this.clone as HTMLElement).addEventListener('transitionend', cb)
     })
   }
   /**

@@ -1,6 +1,6 @@
 import { DeltaHandlerFunction } from './deltaHandlers/delta'
 import { IllusoryElement } from './IllusoryElement'
-import { FilterFunction } from './utils/duplicateNode'
+import { FilterFunction, CloneProcessorFunction } from './utils/duplicateNode'
 
 export interface IOptions {
   /**
@@ -43,6 +43,7 @@ export interface IOptions {
    * @default false
    */
   preserveDataAttributes?: boolean | FilterFunction
+  processClone?: CloneProcessorFunction
 }
 
 export const DEFAULT_OPTIONS: IOptions = {
