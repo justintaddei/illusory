@@ -57,7 +57,9 @@ export class IllusoryElement {
     // as transparent the image will "flash" when transitioned.
     // This is the best thing I can think to do for now.
     // Later, some form of manual override would probably be useful.
-    return 0 < rgba.a && rgba.a < 1
+    if (this.clone.tagName === 'IMG') return 0 < rgba.a && rgba.a < 1
+
+    return rgba.a < 1
   }
 
   /**
