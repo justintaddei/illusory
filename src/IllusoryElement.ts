@@ -52,7 +52,12 @@ export class IllusoryElement {
     const rgba = parseRGBA(this.getStyle('backgroundColor'))
     if (!rgba) return false
 
-    return rgba.a !== 1
+    // `<img>` elements have a transparent background by default
+    // even if the image is fully opaque. If we report the background
+    // as transparent the image will "flash" when transitioned.
+    // This is the best thing I can think to do for now.
+    // Later, some form of manual override would probably be useful.
+    return 0 < rgba.a && rgba.a < 1
   }
 
   /**
