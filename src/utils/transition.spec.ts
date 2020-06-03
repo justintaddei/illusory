@@ -8,6 +8,7 @@ describe('Builds correct transition string', () => {
         easing: 'ease-in-out',
         compositeOnly: false,
         includeChildren: false,
+        ignoreTransparency: ['img'],
         zIndex: 1
       })
     ).toBe('all 3s ease-in-out 0s')
@@ -19,6 +20,7 @@ describe('Builds correct transition string', () => {
         easing: 'ease-in-out',
         compositeOnly: true,
         includeChildren: false,
+        ignoreTransparency: ['img'],
         zIndex: 1
       })
     ).toBe('transform 3s ease-in-out 0s, opacity 3s ease-in-out 0s')

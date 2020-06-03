@@ -9,6 +9,15 @@ import { buildTransitionString } from './utils/transition'
 
 interface IIllusoryElementOptions {
   includeChildren?: boolean
+  /**
+   * If `false` the element we're transitioning **to** has a transparent background then
+   * the element we're transitioning from will fade out.
+   * If `true` the transparency of the elements background will be ignored.
+   *
+   * This can also be an array of tag names which should be ignored (e.g. `['img', 'button']`).
+   * @default ['img']
+   */
+  ignoreTransparency?: boolean | string[]
   zIndex?: number
   deltaHandlers?: IOptions['deltaHandlers']
   preserveDataAttributes?: boolean | FilterFunction
@@ -45,19 +54,22 @@ export class IllusoryElement {
    */
   rect: DOMRect
 
+  _shouldIgnoreTransparency: IIllusoryElementOptions['ignoreTransparency']
+
   /**
    * Returns `true` if the background-color has an alpha channel `< 1`
    */
   _hasTransparentBackground() {
+    if (this._shouldIgnoreTransparency === true) return false
+
+    if (
+      Array.isArray(this._shouldIgnoreTransparency) &&
+      this._shouldIgnoreTransparency.indexOf(this.clone.tagName.toLowerCase())
+    )
+      return false
+
     const rgba = parseRGBA(this.getStyle('backgroundColor'))
     if (!rgba) return false
-
-    // `<img>` elements have a transparent background by default
-    // even if the image is fully opaque. If we report the background
-    // as transparent the image will "flash" when transitioned.
-    // This is the best thing I can think to do for now.
-    // Later, some form of manual override would probably be useful.
-    if (this.clone.tagName === 'IMG') return 0 < rgba.a && rgba.a < 1
 
     return rgba.a < 1
   }
@@ -106,6 +118,8 @@ export class IllusoryElement {
         }
       }
     }
+
+    this._shouldIgnoreTransparency = options?.ignoreTransparency
 
     this.natural = el
 
