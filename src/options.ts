@@ -16,6 +16,15 @@ export interface IOptions {
    */
   compositeOnly: boolean
   /**
+   * If `false` and the element we're transitioning **to** has a transparent background then
+   * the element we're transitioning from will fade out.
+   * If `true` the transparency of the elements background will be ignored.
+   *
+   * This can also be an array of tag names which should be ignored (e.g. `['img', 'button']`).
+   * @default ['img']
+   */
+  ignoreTransparency: boolean | string[]
+  /**
    * A CSS `<time>`. e.g. `2s`, `150ms`, etc.
    * @default "300ms"
    */
@@ -48,6 +57,7 @@ export interface IOptions {
 
 export const DEFAULT_OPTIONS: IOptions = {
   includeChildren: true,
+  ignoreTransparency: ['img'],
   duration: '300ms',
   easing: 'ease',
   zIndex: 1,

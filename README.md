@@ -78,6 +78,7 @@ illusory(from, to)
 | option                 | type                                                               | default     |
 | ---------------------- | ------------------------------------------------------------------ | ----------- |
 | includeChildren        | `boolean`                                                          | `true`      |
+| ignoreTransparency     | `boolean` \| `string[]`                                            | `['img']`   |
 | compositeOnly          | `boolean`                                                          | `false`     |
 | duration               | `string` (e.g. `0.5s`, `200ms`, etc.)                              | `300ms`     |
 | easing                 | `string` (e.g. `ease-in-out`, `cubic-bezier(.29, 1.01, 1, -0.68)`) | `ease`      |
@@ -86,7 +87,7 @@ illusory(from, to)
 | beforeAttach           | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
 | beforeAnimate          | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
 | beforeDetach           | `Function` _(see [Advanced](#advanced))_                           | `undefined` |
-| preserveDataAttributes | `Function` \| Boolean _(see [Advanced](#advanced))_                | `false`     |
+| preserveDataAttributes | `Function` \| `boolean` _(see [Advanced](#advanced))_              | `false`     |
 | processClone           | `Function` _(see [Advanced](#advanced))_                           | `false`     |
 
 > **Important**  
@@ -109,13 +110,14 @@ illusory(from, to, {
 - `el` — `Element`
 - `options` — `Object` (see table below)
 
-| option                 | type                | default   |
-| ---------------------- | ------------------- | --------- |
-| includeChildren        | boolean             | true      |
-| zIndex                 | number              | 1         |
-| deltaHandlers          | Object              | undefined |
-| preserveDataAttributes | Function \| Boolean | false     |
-| processClone           | Function            | undefined |
+| option                 | type                    | default     |
+| ---------------------- | ----------------------- | ----------- |
+| includeChildren        | `boolean`               | `true`      |
+| ignoreTransparency     | `boolean` \| `string[]` | `['img']`   |
+| zIndex                 | `number`                | `1`         |
+| deltaHandlers          | `Object`                | `undefined` |
+| preserveDataAttributes | `Function` \| `boolean` | `false`     |
+| processClone           | `Function`              | `undefined` |
 
 #### Properties
 

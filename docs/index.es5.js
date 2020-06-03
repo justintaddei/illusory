@@ -63,7 +63,8 @@ var _this = this;
                     return [4 /*yield*/, illusory(el(lastEl), to, {
                             beforeAnimate: function (from) {
                                 from.natural.classList.add('hidden');
-                            }
+                            },
+                            ignoreTransparency: false
                         })];
                 case 1:
                     _a.sent();

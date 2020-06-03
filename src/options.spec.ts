@@ -4,6 +4,7 @@ import { DEFAULT_OPTIONS } from './options'
 it('Has the documented default options', () => {
   expect(DEFAULT_OPTIONS).toEqual({
     includeChildren: true,
+    ignoreTransparency: ['img'],
     duration: '300ms',
     easing: 'ease',
     zIndex: 1,
