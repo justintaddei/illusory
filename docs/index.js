@@ -14,7 +14,8 @@
     await illusory(el(lastEl), to, {
       beforeAnimate(from) {
         from.natural.classList.add('hidden')
-      }
+      },
+      ignoreTransparency: false
     })
 
     setTimeout(() => animate(currEl), 1000)

@@ -1,5 +1,15 @@
 # Changelog
 
+### 1.3.0
+
+**Features**
+- Add `ignoreTransparency` option to address [#2](https://github.com/justintaddei/illusory/issues/2) (this feature also replaces the fix from [v1.2.2](#122-june-2nd-2020)).
+
+**Other**
+- Corrected some formatting issues in the README.
+
+---
+
 #### 1.2.3 (June 2nd, 2020)
 
 **Bug fixes**
