@@ -56,6 +56,9 @@ async function illusory(
     await Promise.resolve(options.beforeAttach(start, end))
   }
 
+  start.setStyle('opacity', 1)
+  end.setStyle('opacity', 1)
+
   start._setParent(parent)
   end._setParent(parent)
 

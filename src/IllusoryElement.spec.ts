@@ -9,6 +9,7 @@ describe('Implements the correct public interface', () => {
     expect(illusoryElement.natural).toBeInstanceOf(HTMLElement)
     expect(illusoryElement.clone).toBeInstanceOf(HTMLElement)
     expect(typeof illusoryElement.rect).toBe('object')
+    expect(typeof illusoryElement.isAttached).toBe('boolean')
 
     expect(illusoryElement.getStyle).toBeInstanceOf(Function)
     expect(illusoryElement.setStyle).toBeInstanceOf(Function)
@@ -18,6 +19,7 @@ describe('Implements the correct public interface', () => {
     expect(illusoryElement.show).toBeInstanceOf(Function)
     expect(illusoryElement.showNatural).toBeInstanceOf(Function)
     expect(illusoryElement.flushCSS).toBeInstanceOf(Function)
+    expect(illusoryElement.attach).toBeInstanceOf(Function)
     expect(illusoryElement.detach).toBeInstanceOf(Function)
   })
 

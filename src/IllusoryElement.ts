@@ -8,6 +8,11 @@ import flushCSSUpdates from './utils/flushCSSUpdates'
 import { buildTransitionString } from './utils/transition'
 
 interface IIllusoryElementOptions {
+  /**
+   * If `true`, `this.attach()` is invoked as soon as the instance is created.
+   * @default false
+   */
+  autoAttach?: boolean
   includeChildren?: boolean
   /**
    * If `false` the element we're transitioning **to** has a transparent background then
@@ -53,6 +58,11 @@ export class IllusoryElement {
    * The BoundingClientRect of `this.el`
    */
   rect: DOMRect
+
+  /**
+   * Whether or not the clone is appended to the DOM
+   */
+  isAttached = false
 
   _shouldIgnoreTransparency: IIllusoryElementOptions['ignoreTransparency']
 
@@ -104,8 +114,12 @@ export class IllusoryElement {
    * @param element The parent element
    */
   _setParent(element: HTMLElement | SVGElement) {
+    if (this.isAttached) this.detach()
+
     this.hideNatural()
     element.appendChild(this.clone)
+
+    this.isAttached = true
   }
 
   constructor(el: HTMLElement | SVGElement, options?: IIllusoryElementOptions) {
@@ -137,7 +151,6 @@ export class IllusoryElement {
     this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 
     // Prepare the style for the clone
-    this.setStyle('opacity', '1')
     this.setStyle('left', 'auto')
     this.setStyle('right', 'auto')
     this.setStyle('top', 'auto')
@@ -156,6 +169,8 @@ export class IllusoryElement {
     // Hide the "real" element
     this.natural.style.transition = 'none'
     this.natural.style.animation = 'none'
+
+    if (options?.autoAttach) this.attach()
   }
   /**
    * Returns the orignal style value for `property`
@@ -225,9 +240,20 @@ export class IllusoryElement {
   }
 
   /**
+   * Appends `this.clone` as a child of `element`
+   * and hides the "real" element
+   * @param element The parent element
+   */
+  attach() {
+    this._setParent(document.body)
+  }
+
+  /**
    * Clean up and finish the transition
    */
   detach() {
+    if (!this.isAttached) return
+
     this.showNatural()
 
     // Make sure that if `this.el` has a transition on opacity, it isn't applied until after the opacity is reset
@@ -238,5 +264,7 @@ export class IllusoryElement {
     else this.natural.setAttribute('style', this.initalStyleAttributeValue)
 
     this.clone.remove()
+
+    this.isAttached = false
   }
 }
