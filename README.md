@@ -112,6 +112,7 @@ illusory(from, to, {
 
 | option                 | type                    | default     |
 | ---------------------- | ----------------------- | ----------- |
+| autoAttach             | `boolean`               | `false`     |
 | includeChildren        | `boolean`               | `true`      |
 | ignoreTransparency     | `boolean` \| `string[]` | `['img']`   |
 | zIndex                 | `number`                | `1`         |
@@ -124,6 +125,7 @@ illusory(from, to, {
 - `natural`: `Element` — The original element.
 - `clone`: `Element` — The clone of the "natural" element.
 - `rect`: `DOMRect` — The bounding box of the "natural" element.
+- `isAttached`: `boolean` — Whether or not the clone is appended to the DOM. 
   
 #### Methods
 
@@ -153,6 +155,7 @@ illusory(from, to, {
 - `showNatural()` — Shows the natural element
 - `flushCSS()` — Forces the browser to apply any style changes that might be queued.
   > Useful for applying any css changes before setting a transition on the element.
+- `attach()` — Appends `this.clone` to the body and hides the "natural" element
 - `detach()` — Removes the clone and cleans up styles applied to the natural element.
 
 
