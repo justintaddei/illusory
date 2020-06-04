@@ -21,7 +21,7 @@ Seamlessly morph one element into another. [**Demo**](https://justintaddei.githu
     - [Properties](#properties)
     - [Methods](#methods)
 - [Advanced](#advanced)
-  - [deltaHandlers](#deltahandlers)
+  - [Hooks](#hooks)
     - [DeltaHandlerFunction(delta, deltaStyle, thisStyle)](#deltahandlerfunctiondelta-deltastyle-thisstyle)
   - [preserveDataAttributes](#preservedataattributes)
   - [processClone(node: Node, depth: number): Node | void](#processclonenode-node-depth-number-node--void)
@@ -149,17 +149,65 @@ illusory(from, to, {
   Returns a `Promise` that resolves when the cloned element emits a `"transitionend"` event for the given `property`.  
   If `"any"` is passed, the promise will resolve on the first `"transitionend"` regardless of the transitioned property.
 
-- `hide()` — Hides the cloned element
-- `show()` — Shows the cloned element
-- `hideNatural()` — Hides the natural element
-- `showNatural()` — Shows the natural element
+- `hide()` — Hides the cloned element.
+- `show()` — Shows the cloned element.
+- `hideNatural()` — Hides the natural element.
+- `showNatural()` — Shows the natural element.
 - `flushCSS()` — Forces the browser to apply any style changes that might be queued.
   > Useful for applying any css changes before setting a transition on the element.
-- `attach()` — Appends `this.clone` to the body and hides the "natural" element
+- `attach()` — Appends `this.clone` to the body and hides the "natural" element.
 - `detach()` — Removes the clone and cleans up styles applied to the natural element.
 
 
 ## Advanced
+
+### Hooks
+
+- `beforeAttach(from, to)` —
+Called after the clone is created, but before the clone is appended to the DOM
+
+- `beforeAnimate(from, to)` —
+Called after the clone is appended to the DOM and the natural element has been hidden, but before the animation begins
+
+- `beforeDetach(from, to)` —
+Called after the animation is completed, but before the clone is removed from the DOM
+
+<details>
+  <summary>Example of using hooks</summary>
+    ```js
+  illusory(from, to, {
+    includeChildren: false,
+    async beforeAnimate(from, to) {
+        // Show the natural element and hide the clone
+        // because by default the clone has already
+        // been replaced the natural element
+        from.showNatural()
+        from.hide()
+
+        // Set the clone to animate opacity
+        from.setStyle('transition', 'opacity 0.5s')
+        // Force the style changes to be rendered
+        from.flushCSS()
+
+        // Show the clone and wait for it fade in
+        from.show()
+        await from.waitFor('opacity')
+
+        from.hideNatural()
+    },
+    beforeDetach(from, to) {
+        from.hide()
+
+        to.showNatural()
+
+        to.setStyle('transition', 'opacity 0.5s')
+        to.hide()
+
+        return to.waitFor('opacity')
+    }
+  })
+  ```
+</details>
 
 ### deltaHandlers
 
