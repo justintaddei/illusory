@@ -1,5 +1,13 @@
 # Changelog
 
+### 1.4.0
+
+**Features**
+- Added `IllusoryElement.prototype.attach` in response to [#4](https://github.com/justintaddei/illusory/issues/4)
+- Added new option `autoAttach` in response to [#4](https://github.com/justintaddei/illusory/issues/4)
+
+---
+
 ### 1.3.0
 
 **Features**
