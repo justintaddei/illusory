@@ -21,6 +21,7 @@ Seamlessly morph one element into another. [**Demo**](https://justintaddei.githu
     - [Properties](#properties)
     - [Methods](#methods)
 - [Advanced](#advanced)
+  - [Hooks](#hooks)
   - [deltaHandlers](#deltahandlers)
     - [DeltaHandlerFunction(delta, deltaStyle, thisStyle)](#deltahandlerfunctiondelta-deltastyle-thisstyle)
   - [preserveDataAttributes](#preservedataattributes)
@@ -112,6 +113,7 @@ illusory(from, to, {
 
 | option                 | type                    | default     |
 | ---------------------- | ----------------------- | ----------- |
+| autoAttach             | `boolean`               | `false`     |
 | includeChildren        | `boolean`               | `true`      |
 | ignoreTransparency     | `boolean` \| `string[]` | `['img']`   |
 | zIndex                 | `number`                | `1`         |
@@ -124,6 +126,7 @@ illusory(from, to, {
 - `natural`: `Element` — The original element.
 - `clone`: `Element` — The clone of the "natural" element.
 - `rect`: `DOMRect` — The bounding box of the "natural" element.
+- `isAttached`: `boolean` — Whether or not the clone is appended to the DOM. 
   
 #### Methods
 
@@ -147,16 +150,30 @@ illusory(from, to, {
   Returns a `Promise` that resolves when the cloned element emits a `"transitionend"` event for the given `property`.  
   If `"any"` is passed, the promise will resolve on the first `"transitionend"` regardless of the transitioned property.
 
-- `hide()` — Hides the cloned element
-- `show()` — Shows the cloned element
-- `hideNatural()` — Hides the natural element
-- `showNatural()` — Shows the natural element
+- `hide()` — Hides the cloned element.
+- `show()` — Shows the cloned element.
+- `hideNatural()` — Hides the natural element.
+- `showNatural()` — Shows the natural element.
 - `flushCSS()` — Forces the browser to apply any style changes that might be queued.
   > Useful for applying any css changes before setting a transition on the element.
+- `attach()` — Appends `this.clone` to the body and hides the "natural" element.
 - `detach()` — Removes the clone and cleans up styles applied to the natural element.
 
 
 ## Advanced
+
+### Hooks
+
+> If any hook returns a promise, illusory will wait for the promise to resolve.
+
+- `beforeAttach(from, to)` —
+Called after the clone is created, but before the clone is appended to the DOM
+
+- `beforeAnimate(from, to)` —
+Called after the clone is appended to the DOM and the natural element has been hidden, but before the animation begins
+
+- `beforeDetach(from, to)` —
+Called after the animation is completed, but before the clone is removed from the DOM
 
 ### deltaHandlers
 
