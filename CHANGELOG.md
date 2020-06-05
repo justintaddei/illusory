@@ -1,6 +1,11 @@
 # Changelog
 
-### 1.4.0
+#### 1.4.1
+
+**Bug fixes**
+- Fixed bug caused by improper usage of `Array.prototype.indexOf` resulting in the first item of the `ignoreTransparency` array being skipped.
+
+### 1.4.0 (June 4th, 2020)
 
 **Features**
 - Added `IllusoryElement.prototype.attach` in response to [#4](https://github.com/justintaddei/illusory/issues/4)
@@ -8,7 +13,7 @@
 
 ---
 
-### 1.3.0
+### 1.3.0 (June 3rd, 2020)
 
 **Features**
 - Add `ignoreTransparency` option to address [#2](https://github.com/justintaddei/illusory/issues/2) (this feature also replaces the fix from [v1.2.2](#122-june-2nd-2020)).
