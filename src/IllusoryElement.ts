@@ -74,7 +74,7 @@ export class IllusoryElement {
 
     if (
       Array.isArray(this._shouldIgnoreTransparency) &&
-      this._shouldIgnoreTransparency.indexOf(this.clone.tagName.toLowerCase())
+      this._shouldIgnoreTransparency.indexOf(this.clone.tagName.toLowerCase()) !== -1
     )
       return false
 
