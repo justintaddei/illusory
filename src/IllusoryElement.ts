@@ -66,17 +66,23 @@ export class IllusoryElement {
 
   _shouldIgnoreTransparency: IIllusoryElementOptions['ignoreTransparency']
 
-  /**
-   * Returns `true` if the background-color has an alpha channel `< 1`
-   */
-  _hasTransparentBackground() {
-    if (this._shouldIgnoreTransparency === true) return false
+  get _ignoreTransparency() {
+    if (this._shouldIgnoreTransparency === true) return true
 
     if (
       Array.isArray(this._shouldIgnoreTransparency) &&
       this._shouldIgnoreTransparency.indexOf(this.clone.tagName.toLowerCase()) !== -1
     )
-      return false
+      return true
+
+    return false
+  }
+
+  /**
+   * Returns `true` if the background-color has an alpha channel `< 1`
+   */
+  _hasTransparentBackground() {
+    if (this._ignoreTransparency) return false
 
     const rgba = parseRGBA(this.getStyle('backgroundColor'))
     if (!rgba) return false

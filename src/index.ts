@@ -23,6 +23,7 @@ async function illusory(
     ...DEFAULT_OPTIONS,
     ...options
   }
+
   if (completeOptions.compositeOnly) {
     if (!completeOptions.deltaHandlers) completeOptions.deltaHandlers = {}
 
@@ -35,7 +36,7 @@ async function illusory(
 
     // Don't override user-provided handlers
     for (const prop of nonCompositeProperties)
-      if (!completeOptions.deltaHandlers?.[prop]) completeOptions.deltaHandlers[prop] = false
+      if (!completeOptions.deltaHandlers[prop]) completeOptions.deltaHandlers[prop] = false
   }
 
   // Convert the `HTMLElement` to Illusory if needed.
@@ -82,7 +83,7 @@ async function illusory(
   // background, we have to fade out the `start` element because otherwise it will be visible
   // until it is removed from the dom causing a weird
   // "pop" effect.
-  if (end._hasTransparentBackground() || completeOptions.compositeOnly) start.hide()
+  if (!end._ignoreTransparency && (end._hasTransparentBackground() || completeOptions.compositeOnly)) start.hide()
   end.show()
 
   if (needsWrapperElement) parent.style.opacity = endOpacity
