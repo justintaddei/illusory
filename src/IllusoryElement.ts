@@ -30,11 +30,11 @@ interface IIllusoryElementOptions {
 }
 
 export class IllusoryElement {
-  private initalStyleAttributeValue?: string | null
-  private orignalStyle: { [prop: string]: string } = {}
+  private initialStyleAttributeValue?: string | null
+  private originalStyle: { [prop: string]: string } = {}
 
   /**
-   * DeltaHandlerFunction that transform styles to their new states based on an IDetla
+   * DeltaHandlerFunction that transform styles to their new states based on an IDelta
    */
   private deltaHandlers: IDeltaHandlerMap = {
     transform: transformHandler,
@@ -138,7 +138,7 @@ export class IllusoryElement {
     this.natural = el
 
     // Save the current value of the style attribute for later
-    this.initalStyleAttributeValue = this.natural.getAttribute('style')
+    this.initialStyleAttributeValue = this.natural.getAttribute('style')
 
     this.rect = this.natural.getBoundingClientRect()
 
@@ -173,17 +173,17 @@ export class IllusoryElement {
     if (options?.autoAttach) this.attach()
   }
   /**
-   * Returns the orignal style value for `property`
+   * Returns the original style value for `property`
    */
   getStyle(property: string) {
-    return this.orignalStyle[property] ?? this.clone.style[property]
+    return this.originalStyle[property] ?? this.clone.style[property]
   }
   /**
    * Sets the given css style
    * @param property A CSS property name in camelCase
    */
   setStyle(property: string, value: string | number) {
-    this.orignalStyle[property] = this.getStyle(property)
+    this.originalStyle[property] = this.getStyle(property)
     this.clone.style[property] = value
   }
 
@@ -260,8 +260,8 @@ export class IllusoryElement {
     this.flushCSS()
 
     // Reset `this.el' style attribute
-    if (!this.initalStyleAttributeValue) this.natural.removeAttribute('style')
-    else this.natural.setAttribute('style', this.initalStyleAttributeValue)
+    if (!this.initialStyleAttributeValue) this.natural.removeAttribute('style')
+    else this.natural.setAttribute('style', this.initialStyleAttributeValue)
 
     this.clone.remove()
 
