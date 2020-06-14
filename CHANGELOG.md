@@ -1,6 +1,11 @@
 # Changelog
 
-#### 1.4.1
+#### 1.4.2 (June 14th, 2020)
+
+**Bug fixes**
+- Fixed *Creating independent IllusoryElements brakes compositeOnly* (See [#11](https://github.com/justintaddei/illusory/issues/11))
+
+#### 1.4.1 (June 5th, 2020)
 
 **Bug fixes**
 - Fixed bug caused by improper usage of `Array.prototype.indexOf` resulting in the first item of the `ignoreTransparency` array being skipped.
