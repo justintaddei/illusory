@@ -13,6 +13,9 @@ type DeltaHandlerFunction = (delta: IDelta, deltaStyle: string, thisStyle: strin
 interface IDeltaHandlerMap {
   [propertyName: string]: DeltaHandlerFunction
 }
+interface IDeltaHandlerConfigMap {
+  [propertyName: string]: DeltaHandlerFunction | false
+}
 
 const DELTA_PASS_THROUGH_HANDLER: DeltaHandlerFunction = (_, __, thisStyle) => thisStyle
 
@@ -27,4 +30,4 @@ function getDelta(from: IllusoryElement, to: IllusoryElement): IDelta {
   }
 }
 
-export { getDelta, DeltaHandlerFunction, IDeltaHandlerMap, IDelta, DELTA_PASS_THROUGH_HANDLER }
+export { getDelta, DeltaHandlerFunction, IDeltaHandlerMap, IDeltaHandlerConfigMap, IDelta, DELTA_PASS_THROUGH_HANDLER }
