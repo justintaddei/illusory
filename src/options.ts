@@ -1,4 +1,4 @@
-import { DeltaHandlerFunction } from './deltaHandlers/delta'
+import { DeltaHandlerFunction, IDeltaHandlerConfigMap } from './deltaHandlers/delta'
 import { IllusoryElement } from './IllusoryElement'
 import { FilterFunction, CloneProcessorFunction } from './utils/duplicateNode'
 
@@ -10,8 +10,8 @@ export interface IOptions {
    */
   includeChildren: boolean
   /**
-   * If `true`, only compositable properties will be animated
-   * (transform and opacity)
+   * If `true`, only compositor-friendly properties will be animated
+   * (`transform` and `opacity`)
    * @default false
    */
   compositeOnly: boolean
@@ -39,9 +39,7 @@ export interface IOptions {
    * @default 1
    */
   zIndex: number
-  deltaHandlers?: {
-    [property: string]: DeltaHandlerFunction | false
-  }
+  deltaHandlers?: IDeltaHandlerConfigMap
   beforeAttach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeAnimate?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>
   beforeDetach?: (from: IllusoryElement, to: IllusoryElement) => void | Promise<void>

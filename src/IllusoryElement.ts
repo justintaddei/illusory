@@ -1,5 +1,5 @@
 import borderRadiusHandler from './deltaHandlers/borderRadiusHandler'
-import { DELTA_PASS_THROUGH_HANDLER, getDelta, IDeltaHandlerMap } from './deltaHandlers/delta'
+import { DELTA_PASS_THROUGH_HANDLER, getDelta, IDeltaHandlerConfigMap, IDeltaHandlerMap } from './deltaHandlers/delta'
 import transformHandler from './deltaHandlers/transformHandler'
 import { DEFAULT_OPTIONS, IOptions } from './options'
 import { parseRGBA } from './parsers/parseRGBA'
@@ -128,16 +128,18 @@ export class IllusoryElement {
     this.isAttached = true
   }
 
-  constructor(el: HTMLElement | SVGElement, options?: IIllusoryElementOptions) {
-    // Apply delta overrides
-    if (options?.deltaHandlers) {
-      for (const prop in options.deltaHandlers) {
-        if (options.deltaHandlers.hasOwnProperty(prop)) {
-          const handler = options.deltaHandlers[prop]
-          this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
-        }
+  _appendDeltaHandlers(deltaHandlers: IDeltaHandlerConfigMap) {
+    for (const prop in deltaHandlers) {
+      if (deltaHandlers.hasOwnProperty(prop)) {
+        const handler = deltaHandlers[prop]
+        this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
       }
     }
+  }
+
+  constructor(el: HTMLElement | SVGElement, options?: IIllusoryElementOptions) {
+    // Apply delta overrides
+    if (options?.deltaHandlers) this._appendDeltaHandlers(options.deltaHandlers)
 
     this._shouldIgnoreTransparency = options?.ignoreTransparency
 

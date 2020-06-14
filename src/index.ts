@@ -5,8 +5,16 @@ import { createOpacityWrapper } from './utils/opacityWrapperNode'
 import './polyfill/Element.remove'
 import './polyfill/NodeList.forEach'
 
-function createIllusoryElement(element: HTMLElement | IllusoryElement, options?: Partial<IOptions>): IllusoryElement {
-  return element instanceof IllusoryElement ? element : new IllusoryElement(element, options)
+function createIllusoryElement(element: HTMLElement | IllusoryElement, options: IOptions): IllusoryElement {
+  let illusoryElement: IllusoryElement
+
+  if (element instanceof IllusoryElement) {
+    illusoryElement = element
+
+    if (options.deltaHandlers) illusoryElement._appendDeltaHandlers(options.deltaHandlers)
+  } else illusoryElement = new IllusoryElement(element, options)
+
+  return illusoryElement
 }
 
 /**
