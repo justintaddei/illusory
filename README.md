@@ -143,7 +143,7 @@ illusory(from, to, {
   illusoryEl.getStyle('backgroundColor') // #fff
   ```
 
-- `getStyle(property: string): string` — Returns the orignal style value for the given property.  
+- `getStyle(property: string): string` — Returns the original style value for the given property.  
   > **Note:** Because `window.getComputedStyle` is used under the hood, CSS shorthand properties are not supported (background, border-radius, etc.). Instead use background-color, background-image, border-bottom-right-radius, etc.
 
 - `waitFor(property: string): Promise` —  
@@ -177,7 +177,7 @@ Called after the animation is completed, but before the clone is removed from th
 
 ### deltaHandlers
 
-An object where the keys are css properties and the values are either false (disabled) or a function that returns a new value for the repective property.
+An object where the keys are css properties and the values are either false (disabled) or a function that returns a new value for the respective property.
 
 For example, the following snippet disables the handlers for transform and border-top-left-radius and creates a new handler for background-color that always returns "red".
 
