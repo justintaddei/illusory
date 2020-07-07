@@ -128,6 +128,14 @@ export class IllusoryElement {
     this.isAttached = true
   }
 
+  /**
+   * Reset `this.natural`'s style attribute
+   */
+  private _resetNaturalStyleAttribute() {
+    if (!this.initialStyleAttributeValue) this.natural.removeAttribute('style')
+    else this.natural.setAttribute('style', this.initialStyleAttributeValue)
+  }
+
   _appendDeltaHandlers(deltaHandlers: IDeltaHandlerConfigMap) {
     for (const prop in deltaHandlers) {
       if (deltaHandlers.hasOwnProperty(prop)) {
@@ -148,7 +156,15 @@ export class IllusoryElement {
     // Save the current value of the style attribute for later
     this.initialStyleAttributeValue = this.natural.getAttribute('style')
 
-    this.rect = this.natural.getBoundingClientRect()
+    this.natural.style.transition = 'none'
+    this.natural.style.animation = 'none'
+
+    {
+      const originalNaturalTransform = this.natural.style.transform
+      this.natural.style.transform = 'none'
+      this.rect = this.natural.getBoundingClientRect()
+      this.natural.style.transform = originalNaturalTransform
+    }
 
     this.clone = duplicateNode(this.natural, {
       includeChildren: options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren,
@@ -164,8 +180,6 @@ export class IllusoryElement {
     this.setStyle('top', 'auto')
     this.setStyle('bottom', 'auto')
     this.setStyle('margin', '0 0 0 0')
-    this.setStyle('transformOrigin', '0 0')
-    this.setStyle('transform', 'none')
     this.setStyle('transition', 'none')
     this.setStyle('animation', 'none')
     this.setStyle('pointerEvents', 'none')
@@ -173,10 +187,6 @@ export class IllusoryElement {
     this.setStyle('position', 'fixed')
     this.setStyle('left', `${this.rect.left}px`)
     this.setStyle('top', `${this.rect.top}px`)
-
-    // Hide the "real" element
-    this.natural.style.transition = 'none'
-    this.natural.style.animation = 'none'
 
     if (options?.autoAttach) this.attach()
   }
@@ -267,9 +277,7 @@ export class IllusoryElement {
     // Make sure that if `this.el` has a transition on opacity, it isn't applied until after the opacity is reset
     this.flushCSS()
 
-    // Reset `this.el' style attribute
-    if (!this.initialStyleAttributeValue) this.natural.removeAttribute('style')
-    else this.natural.setAttribute('style', this.initialStyleAttributeValue)
+    this._resetNaturalStyleAttribute()
 
     this.clone.remove()
 

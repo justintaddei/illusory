@@ -58,5 +58,8 @@
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "rematrix": "^0.7.0"
   }
 }
