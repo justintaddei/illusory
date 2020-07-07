@@ -8,7 +8,8 @@ it('Calculates the correct delta', () => {
       left: 40,
       width: 300,
       height: 500
-    }
+    },
+    getStyle: (prop: string) => (prop === 'transformOrigin' ? '50px 50px' : '')
   }
   const deltaTo = {
     rect: {
@@ -16,12 +17,14 @@ it('Calculates the correct delta', () => {
       left: 90,
       width: 600,
       height: 250
-    }
+    },
+    // This shouldn't effect the delta
+    getStyle: (prop: string) => (prop === 'transformOrigin' ? '150px 150px' : '')
   }
 
   expect(getDelta(deltaFrom as IllusoryElement, deltaTo as IllusoryElement)).toEqual({
-    x: 50,
-    y: -25,
+    x: 100,
+    y: -50,
     scaleX: 2,
     scaleY: 0.5,
     inverseScaleX: 0.5,

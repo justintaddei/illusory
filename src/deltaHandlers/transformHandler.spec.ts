@@ -9,7 +9,7 @@ it('Correctly handles transform', () => {
     scaleY: 0.5 as IDelta['scaleY']
   }
 
-  expect(transformHandler(delta as IDelta)).toBe(
-    `translate3d(${delta.x}px,${delta.y}px, 0) scale(${delta.scaleX}, ${delta.scaleY})`
+  expect(transformHandler(delta as IDelta, 'matrix3d(0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, 20, 20, 0, 1)')).toBe(
+    `matrix3d(0.25, 0, 0, 0, 0, 0.25, 0, 0, 0, 0, 1, 0, 40, 40, 0, 1)`
   )
 })
