@@ -2,6 +2,7 @@ import { IllusoryElement } from './IllusoryElement'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 import { IOptions, DEFAULT_OPTIONS } from './options'
 import { createOpacityWrapper } from './utils/opacityWrapperNode'
+import './polyfill/String.startsWith'
 import './polyfill/Element.remove'
 import './polyfill/NodeList.forEach'
 
