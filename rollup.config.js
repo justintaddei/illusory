@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 import { uglify } from 'rollup-plugin-uglify'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 export default [
   {
@@ -14,7 +15,8 @@ export default [
             declarationDir: pkg.types
           }
         }
-      })
+      }),
+      nodeResolve()
     ],
 
     output: [
@@ -35,7 +37,8 @@ export default [
             declaration: false
           }
         }
-      })
+      }),
+      nodeResolve()
     ],
 
     output: [
@@ -57,6 +60,8 @@ export default [
           }
         }
       }),
+      ,
+      nodeResolve(),
       uglify({
         sourcemap: false,
         output: {
