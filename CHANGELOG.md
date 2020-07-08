@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 (Unreleased)
+
+**Breaking changes**
+
+**Features**
+- illusory now supports transitioning between elements with preexisting CSS transforms applied to them (must have same `transform-origin`) (See [#14](https://github.com/justintaddei/illusory/issues/14)).
+
+**Bug fixes**
+
 #### 1.4.2 (June 14th, 2020)
 
 **Bug fixes**
