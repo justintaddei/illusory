@@ -1,6 +1,6 @@
-import { DeltaHandlerFunction, IDeltaHandlerConfigMap } from './deltaHandlers/delta'
+import { IDeltaHandlerConfigMap } from './deltaHandlers/delta'
 import { IllusoryElement } from './IllusoryElement'
-import { FilterFunction, CloneProcessorFunction } from './utils/duplicateNode'
+import { CloneProcessorFunction, FilterFunction } from './utils/duplicateNode'
 
 export interface IOptions {
   /**
@@ -51,6 +51,16 @@ export interface IOptions {
    */
   preserveDataAttributes?: boolean | FilterFunction
   processClone?: CloneProcessorFunction
+  /**
+   * An array of scrollable elements (including `window`).
+   * Illusory will listen to `scroll` events on these targets and update the position of the
+   * `IllusoryElement`s so that they appear to remain relative to the given container.
+   *
+   * @tip specifying an empty array (`[]`) will cause the `IllusoryElement`s to remain fixed in the viewport.
+   *
+   * @default [window]
+   */
+  relativeTo: (HTMLElement | Window)[]
 }
 
 export const DEFAULT_OPTIONS: IOptions = {
@@ -59,5 +69,6 @@ export const DEFAULT_OPTIONS: IOptions = {
   duration: '300ms',
   easing: 'ease',
   zIndex: 1,
-  compositeOnly: false
+  compositeOnly: false,
+  relativeTo: [window]
 }

@@ -8,6 +8,7 @@ it('Has the documented default options', () => {
     duration: '300ms',
     easing: 'ease',
     zIndex: 1,
-    compositeOnly: false
+    compositeOnly: false,
+    relativeTo: [window]
   })
 })
