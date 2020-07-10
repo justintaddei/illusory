@@ -35,7 +35,7 @@ class ScrollManager {
 }
 
 function getCumulativeScrollDelta(scrollManagers: Map<HTMLElement | Window, ScrollManager>) {
-  const managers = [...scrollManagers.values()]
+  const managers = Array.from(scrollManagers.values())
 
   return {
     x: managers.map(s => s.delta.x).reduce((p, c) => p + c, 0),
