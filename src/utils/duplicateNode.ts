@@ -7,7 +7,8 @@ interface ICloneOptions {
   processClone?: CloneProcessorFunction
 }
 
-const isHTMLOrSVG = (el: Node) => el instanceof HTMLElement || el instanceof SVGElement
+const isHTMLOrSVG = (node: Node): node is HTMLElement | SVGAElement =>
+  node instanceof HTMLElement || node instanceof SVGElement
 
 /**
  * Converts a string in camelCase to kebab-case
@@ -55,26 +56,34 @@ function copyStyles(source: HTMLElement | SVGElement, target: HTMLElement | SVGE
 }
 
 /**
- * Clones an element, with it's computed styles applied inline, and optionally it's childen
+ * Clones an element, with it's computed styles applied inline, and optionally it's children
  * @param includeChildren Whether or not to also include the `element`s children
  */
 export function duplicateNode(node: Node, options: ICloneOptions, depth = 0) {
-  const clone = node.cloneNode(false)
+  let clone = node.cloneNode(false)
 
-  // TODO Figure out why Typescript doesn't recognize this check
+  // If it's not a TextNode or something.
   if (isHTMLOrSVG(node)) {
-    if (options.includeChildren)
-      node.childNodes.forEach(child => clone.appendChild(duplicateNode(child, options, depth + 1)))
-
-    copyStyles(node as HTMLElement | SVGElement, clone as HTMLElement | SVGElement)
+    copyStyles(node, clone as typeof node)
 
     if (options.preserveDataAttributes !== true)
-      filterDataAttributes(clone as HTMLElement | SVGElement, options.preserveDataAttributes)
+      filterDataAttributes(clone as typeof node, options.preserveDataAttributes)
   }
 
-  let cloneOverwrite: Node | void
+  if (typeof options.processClone === 'function') {
+    const processedClone = options.processClone(clone, depth)
 
-  if (typeof options.processClone === 'function') cloneOverwrite = options.processClone(clone, depth)
+    if (processedClone) clone = processedClone
+    else return null
+  }
 
-  return cloneOverwrite instanceof Node ? cloneOverwrite : clone
+  if (options.includeChildren) {
+    node.childNodes.forEach(child => {
+      const duplicatedNode = duplicateNode(child, options, depth + 1)
+
+      if (duplicatedNode) clone.appendChild(duplicatedNode)
+    })
+  }
+
+  return clone
 }
