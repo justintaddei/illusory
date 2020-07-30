@@ -9,6 +9,6 @@ it('Has the documented default options', () => {
     easing: 'ease',
     zIndex: 1,
     compositeOnly: false,
-    relativeTo: [window]
+    relativeTo: [document]
   })
 })
