@@ -52,15 +52,15 @@ export interface IOptions {
   preserveDataAttributes?: boolean | FilterFunction
   processClone?: CloneProcessorFunction
   /**
-   * An array of scrollable elements (including `window`).
+   * An array of scrollable elements (including `document`).
    * Illusory will listen to `scroll` events on these targets and update the position of the
    * `IllusoryElement`s so that they appear to remain relative to the given container.
    *
    * @tip specifying an empty array (`[]`) will cause the `IllusoryElement`s to remain fixed in the viewport.
    *
-   * @default [window]
+   * @default [document]
    */
-  relativeTo: (HTMLElement | Window)[]
+  relativeTo: (HTMLElement | Document)[]
 }
 
 export const DEFAULT_OPTIONS: IOptions = {
@@ -70,5 +70,5 @@ export const DEFAULT_OPTIONS: IOptions = {
   easing: 'ease',
   zIndex: 1,
   compositeOnly: false,
-  relativeTo: [window]
+  relativeTo: [document]
 }

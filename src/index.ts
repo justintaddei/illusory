@@ -1,47 +1,11 @@
 import { IllusoryElement } from './IllusoryElement'
-import flushCSSUpdates from './utils/flushCSSUpdates'
-import { IOptions, DEFAULT_OPTIONS } from './options'
-import { createOpacityWrapper } from './utils/opacityWrapperNode'
-import './polyfill/String.startsWith'
+import { DEFAULT_OPTIONS, IOptions } from './options'
 import './polyfill/Element.remove'
 import './polyfill/NodeList.forEach'
-
-class ScrollManager {
-  target: HTMLElement | Window
-  private originalPosition: { x: number; y: number }
-
-  handler: (e: Event) => void
-
-  constructor(target: HTMLElement | Window, handler: (e: Event) => void) {
-    this.target = target
-    this.handler = handler
-
-    this.originalPosition = this.currentPosition
-  }
-
-  get currentPosition() {
-    return {
-      x: 'scrollLeft' in this.target ? this.target.scrollLeft : this.target.scrollX,
-      y: 'scrollTop' in this.target ? this.target.scrollTop : this.target.scrollY
-    }
-  }
-
-  get delta() {
-    return {
-      x: this.originalPosition.x - this.currentPosition.x,
-      y: this.originalPosition.y - this.currentPosition.y
-    }
-  }
-}
-
-function getCumulativeScrollDelta(scrollManagers: Map<HTMLElement | Window, ScrollManager>) {
-  const managers = Array.from(scrollManagers.values())
-
-  return {
-    x: managers.map(s => s.delta.x).reduce((p, c) => p + c, 0),
-    y: managers.map(s => s.delta.y).reduce((p, c) => p + c, 0)
-  }
-}
+import './polyfill/String.startsWith'
+import flushCSSUpdates from './utils/flushCSSUpdates'
+import { createOpacityWrapper } from './utils/opacityWrapperNode'
+import ScrollManager, { ScrollHandler } from './utils/ScrollManager'
 
 function createIllusoryElement(element: HTMLElement | IllusoryElement, options: IOptions): IllusoryElement {
   let illusoryElement: IllusoryElement
@@ -96,22 +60,12 @@ async function illusory(
   const needsWrapperElement = startOpacity !== '1' || endOpacity !== '1' || completeOptions.relativeTo.length > 0
 
   const parent = needsWrapperElement ? createOpacityWrapper(startOpacity, completeOptions) : document.body
-  const scrollHandlers = new Map<HTMLElement | Window, ScrollManager>()
 
-  completeOptions.relativeTo.forEach(target => {
-    const handler = () => {
-      const delta = getCumulativeScrollDelta(scrollHandlers)
+  const scrollHandler: ScrollHandler = ({ x, y }) => {
+    parent.style.transform = `translate(${x}px, ${y}px)`
+  }
 
-      console.log('delta :>> ', delta)
-
-      parent.style.transform = `translate(${delta.x}px, ${delta.y}px)`
-    }
-
-    scrollHandlers.set(target, new ScrollManager(target, handler))
-
-    // TODO: use rAF
-    target.addEventListener('scroll', handler, true)
-  })
+  ScrollManager.add(completeOptions.relativeTo, scrollHandler)
 
   // beforeAnimate hook
   if (typeof options?.beforeAttach === 'function') {
@@ -164,9 +118,7 @@ async function illusory(
   if (needsWrapperElement) {
     parent.remove()
 
-    scrollHandlers.forEach(({ handler }, target) => {
-      target.removeEventListener('scroll', handler, true)
-    })
+    ScrollManager.remove(completeOptions.relativeTo, scrollHandler)
   }
 }
 
