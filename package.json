@@ -13,10 +13,10 @@
     "animation",
     "element transition"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
-  "unpkg": "dist/iife/index.js",
-  "types": "types/",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.js",
+  "types": "dist/types",
   "files": [
     "dist/**/*",
     "types/**/*"
