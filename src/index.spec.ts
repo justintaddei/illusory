@@ -13,7 +13,8 @@ it('returns a Promise', () => {
   const el1 = document.createElement('div')
   const el2 = document.createElement('div')
 
-  const promise = illusory(el1, el2)
+  const { finished, cancel } = illusory(el1, el2)
 
-  expect(promise).toHaveProperty('then')
+  expect(finished).toHaveProperty('then')
+  expect(cancel).toBeInstanceOf(Function)
 })
