@@ -1,5 +1,5 @@
 import { IllusoryElement } from './IllusoryElement'
-import { DEFAULT_OPTIONS, IIllusoryControls, IIllusoryOptions } from './options'
+import { DEFAULT_OPTIONS, IIllusoryOptions } from './options'
 import './polyfill/Element.remove'
 import './polyfill/NodeList.forEach'
 import './polyfill/String.startsWith'
@@ -10,6 +10,18 @@ import flushCSSUpdates from './utils/flushCSSUpdates'
  * "Reactive" reference to a cancel method
  */
 interface ICancelRef {
+  cancel: () => void
+}
+
+interface IIllusoryControls {
+  /**
+   * Resolves when the animation is finished
+   * Resolves to `true` if the animation was not canceled
+   */
+  finished: Promise<boolean>
+  /**
+   * Immediately cancels the animation
+   */
   cancel: () => void
 }
 

@@ -58,18 +58,6 @@ export interface IIllusoryElementOptions {
   attachImmediately?: boolean
 }
 
-export interface IIllusoryControls {
-  /**
-   * Resolves when the animation is finished
-   * Resolves to `true` if the animation was not canceled
-   */
-  finished: Promise<boolean>
-  /**
-   * Immediately cancels the animation
-   */
-  cancel: () => void
-}
-
 export interface IIllusoryOptions {
   /**
    * Options pertaining to `IllusoryElement`s
