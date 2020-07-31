@@ -1,33 +1,11 @@
 import borderRadiusHandler from './deltaHandlers/borderRadiusHandler'
-import { DELTA_PASS_THROUGH_HANDLER, getDelta, IDeltaHandlerConfigMap, IDeltaHandlerMap } from './deltaHandlers/delta'
+import { getDelta, IDeltaHandlerMap, DELTA_PASS_THROUGH_HANDLER } from './deltaHandlers/delta'
 import transformHandler from './deltaHandlers/transformHandler'
-import { DEFAULT_OPTIONS, IOptions } from './options'
+import { DEFAULT_OPTIONS, IIllusoryElementOptions, IIllusoryOptions } from './options'
 import { parseRGBA } from './parsers/parseRGBA'
-import { CloneProcessorFunction, duplicateNode, FilterFunction } from './utils/duplicateNode'
+import { duplicateNode } from './utils/duplicateNode'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 import { buildTransitionString } from './utils/transition'
-
-interface IIllusoryElementOptions {
-  /**
-   * If `true`, `this.attach()` is invoked as soon as the instance is created.
-   * @default false
-   */
-  autoAttach?: boolean
-  includeChildren?: boolean
-  /**
-   * If `false` the element we're transitioning **to** has a transparent background then
-   * the element we're transitioning from will fade out.
-   * If `true` the transparency of the elements background will be ignored.
-   *
-   * This can also be an array of tag names which should be ignored (e.g. `['img', 'button']`).
-   * @default ['img']
-   */
-  ignoreTransparency?: boolean | string[]
-  zIndex?: number
-  deltaHandlers?: IOptions['deltaHandlers']
-  preserveDataAttributes?: boolean | FilterFunction
-  processClone?: CloneProcessorFunction
-}
 
 export class IllusoryElement {
   private initialStyleAttributeValue?: string | null
@@ -42,6 +20,15 @@ export class IllusoryElement {
     borderTopRightRadius: borderRadiusHandler,
     borderBottomRightRadius: borderRadiusHandler,
     borderBottomLeftRadius: borderRadiusHandler
+  }
+  _makeCompositeOnly() {
+    this.deltaHandlers = {
+      transform: transformHandler,
+      borderTopLeftRadius: DELTA_PASS_THROUGH_HANDLER,
+      borderTopRightRadius: DELTA_PASS_THROUGH_HANDLER,
+      borderBottomLeftRadius: DELTA_PASS_THROUGH_HANDLER,
+      borderBottomRightRadius: DELTA_PASS_THROUGH_HANDLER
+    }
   }
 
   /**
@@ -103,7 +90,7 @@ export class IllusoryElement {
   /**
    * Sets the CSS transitions
    */
-  _enableTransitions(options: IOptions) {
+  _enableTransitions(options: IIllusoryOptions) {
     this.setStyle('transition', buildTransitionString(options))
   }
 
@@ -136,25 +123,13 @@ export class IllusoryElement {
     else this.natural.setAttribute('style', this.initialStyleAttributeValue)
   }
 
-  _appendDeltaHandlers(deltaHandlers: IDeltaHandlerConfigMap) {
-    for (const prop in deltaHandlers) {
-      if (deltaHandlers.hasOwnProperty(prop)) {
-        const handler = deltaHandlers[prop]
-        this.deltaHandlers[prop] = typeof handler === 'function' ? handler : DELTA_PASS_THROUGH_HANDLER
-      }
-    }
-  }
-
-  constructor(el: HTMLElement | SVGElement, options?: IIllusoryElementOptions) {
-    // Apply delta overrides
-    if (options?.deltaHandlers) this._appendDeltaHandlers(options.deltaHandlers)
-
-    this._shouldIgnoreTransparency = options?.ignoreTransparency
-
+  constructor(el: HTMLElement | SVGElement, options?: Partial<IIllusoryElementOptions>) {
     this.natural = el
 
     // Save the current value of the style attribute for later
     this.initialStyleAttributeValue = this.natural.getAttribute('style')
+
+    this._shouldIgnoreTransparency = options?.ignoreTransparency ?? DEFAULT_OPTIONS.element.ignoreTransparency
 
     this.natural.style.transition = 'none'
     this.natural.style.animation = 'none'
@@ -167,12 +142,10 @@ export class IllusoryElement {
     }
 
     this.clone = duplicateNode(this.natural, {
-      includeChildren: options?.includeChildren ?? DEFAULT_OPTIONS.includeChildren,
+      includeChildren: options?.includeChildren ?? DEFAULT_OPTIONS.element.includeChildren,
       preserveDataAttributes: options?.preserveDataAttributes,
       processClone: options?.processClone
     }) as HTMLElement | SVGElement
-
-    this.setStyle('zIndex', options?.zIndex ?? DEFAULT_OPTIONS.zIndex)
 
     // Prepare the style for the clone
     this.setStyle('left', 'auto')
@@ -188,7 +161,7 @@ export class IllusoryElement {
     this.setStyle('left', `${this.rect.left}px`)
     this.setStyle('top', `${this.rect.top}px`)
 
-    if (options?.autoAttach) this.attach()
+    if (options?.attachImmediately) this.attach()
   }
   /**
    * Returns the original style value for `property`
@@ -213,14 +186,16 @@ export class IllusoryElement {
       const cb = async (e: TransitionEvent) => {
           if (property !== 'any' && e.propertyName !== property) return
 
-          // Wait a from so any other transitionend events have time to fire
+          // Wait a frame so any other transitionend events have time to fire
           if (property === 'any') await new Promise(r => requestAnimationFrame(r))
           ;(this.clone as HTMLElement).removeEventListener('transitionend', cb)
+          ;(this.clone as HTMLElement).removeEventListener('transitioncancel', cb)
           resolve()
         }
 
-        // TODO figure out why TypeScript is complaining about this event listener
+        // TODO figure out why TypeScript is complaining about these event listener
       ;(this.clone as HTMLElement).addEventListener('transitionend', cb)
+      ;(this.clone as HTMLElement).addEventListener('transitioncancel', cb)
     })
   }
   /**
