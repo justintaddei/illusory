@@ -12,6 +12,7 @@
 **Features**
 - illusory now supports transitioning between elements with preexisting CSS transforms applied to them (must have the same `transform-origin` set) (See [#14](https://github.com/justintaddei/illusory/issues/14)).
 - Added `relativeTo` option to account for scroll-offsets. (See [#8](https://github.com/justintaddei/illusory/issues/8))
+- It is now possible to cancel an illusory animation using the new "Controls API" (See [#13](https://github.com/justintaddei/illusory/issues/13)).
 
 #### 1.4.2 (June 14th, 2020)
 

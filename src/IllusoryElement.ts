@@ -189,13 +189,11 @@ export class IllusoryElement {
           // Wait a frame so any other transitionend events have time to fire
           if (property === 'any') await new Promise(r => requestAnimationFrame(r))
           ;(this.clone as HTMLElement).removeEventListener('transitionend', cb)
-          ;(this.clone as HTMLElement).removeEventListener('transitioncancel', cb)
           resolve()
         }
 
         // TODO figure out why TypeScript is complaining about these event listener
       ;(this.clone as HTMLElement).addEventListener('transitionend', cb)
-      ;(this.clone as HTMLElement).addEventListener('transitioncancel', cb)
     })
   }
   /**
