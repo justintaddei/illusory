@@ -3,11 +3,15 @@
 ## 2.0.0 (Unreleased)
 
 **Breaking changes**
+- Options related to IllusoryElements specified when calling `illusory` are now specified in options.element instead of as top-level options.
+- `illusory` now resolves to a "controls object" instead of a boolean. (See [#13](https://github.com/justintaddei/illusory/issues/13))
+- `autoAttach` is not named `attachImmediately`
+- `beforeAttach` hook has been removed in favor of `beforeAnimate` since they were essentially the same thing.
+- `deltaHandlers` API has been removed. It complicated the code and I didn't see any practical use for it.
 
 **Features**
-- illusory now supports transitioning between elements with preexisting CSS transforms applied to them (must have same `transform-origin`) (See [#14](https://github.com/justintaddei/illusory/issues/14)).
-
-**Bug fixes**
+- illusory now supports transitioning between elements with preexisting CSS transforms applied to them (must have the same `transform-origin` set) (See [#14](https://github.com/justintaddei/illusory/issues/14)).
+- Added `relativeTo` option to account for scroll-offsets. (See [#8](https://github.com/justintaddei/illusory/issues/8))
 
 #### 1.4.2 (June 14th, 2020)
 
