@@ -1,8 +1,5 @@
 import { IllusoryElement } from './IllusoryElement'
 import { DEFAULT_OPTIONS, IIllusoryOptions } from './options'
-import './polyfill/Element.remove'
-import './polyfill/NodeList.forEach'
-import './polyfill/String.startsWith'
 import { createContainer, IContainerControls } from './utils/createContainer'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 
