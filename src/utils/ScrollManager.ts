@@ -1,134 +1,118 @@
 type ScrollTarget = Document | HTMLElement
 
-interface ScrollDelta {
+interface IScrollPosition {
   x: number
   y: number
 }
 
-export type ScrollHandler = (delta: ScrollDelta) => void
+export interface IScrollListener {
+  dependencies: ScrollTarget[]
+  handler: (delta: IScrollPosition) => void
+}
 
-class ScrollManager {
-  static lastTarget: ScrollTarget
-  static debounce: boolean = false
-  static managers = new Map<ScrollTarget, ScrollManager>()
-  static getCumulativeDelta(targets: ScrollTarget[]) {
-    const delta: ScrollDelta = {
-      x: 0,
-      y: 0
-    }
+const targetManagers = new Map<ScrollTarget, TargetManager>()
 
-    ScrollManager.managers.forEach((manager, target) => {
-      if (!targets.includes(target)) return
+class TargetManager {
+  static getCumulativeDelta(listener: IScrollListener) {
+    return listener.dependencies.reduce(
+      ({ x, y }, target) => {
+        const delta = targetManagers.get(target)!.getDelta(listener)
 
-      const { x, y } = manager.delta
-
-      delta.x += x
-      delta.y += y
-    })
-
-    return delta
-  }
-
-  static scrollHandler({ target }: Event) {
-    ScrollManager.lastTarget = target as ScrollTarget
-
-    if (ScrollManager.debounce) return
-
-    ScrollManager.debounce = true
-
-    requestAnimationFrame(() => {
-      ScrollManager.debounce = false
-
-      ScrollManager.managers.get(ScrollManager.lastTarget as ScrollTarget)!.activate()
-    })
-  }
-
-  static add(targets: ScrollTarget[], handler: ScrollHandler) {
-    if (!ScrollManager.managers.size) document.addEventListener('scroll', ScrollManager.scrollHandler, true)
-
-    targets.forEach(target => {
-      if (ScrollManager.managers.has(target)) ScrollManager.managers.get(target)!.addHandler(targets, handler)
-      else new ScrollManager(target).addHandler(targets, handler)
-    })
-  }
-
-  static remove(targets: ScrollTarget[], handler: ScrollHandler) {
-    targets.forEach(target => {
-      if (!ScrollManager.managers.has(target)) return
-
-      const { handlers } = ScrollManager.managers.get(target)!
-
-      if (handlers.length > 1) {
-        let index: number = -1
-
-        for (let i = 0; i < handlers.length; i++) {
-          const { handler: h } = handlers[i]
-          if (h === handler) {
-            index = i
-            break
-          }
+        return {
+          x: x + delta.x,
+          y: y + delta.y
         }
-
-        if (index === -1) return
-
-        handlers.splice(index, 1)
-      } else ScrollManager.managers.delete(target)
-    })
-
-    if (!ScrollManager.managers.size) document.removeEventListener('scroll', ScrollManager.scrollHandler, true)
+      },
+      { x: 0, y: 0 }
+    )
   }
 
-  target: ScrollTarget
-  originalPosition: { x: number; y: number }
-  cache: ScrollDelta | null = null
+  private target: ScrollTarget
+  private listeners: IScrollListener[] = []
+  private initialPositions = new Map<IScrollListener, IScrollPosition>()
 
-  handlers: {
-    dependencies: ScrollTarget[]
-    handler: ScrollHandler
-  }[] = []
-
-  get currentPosition() {
+  private get currentPosition(): IScrollPosition {
     return {
       x: this.target instanceof Document ? window.scrollX : this.target.scrollLeft,
       y: this.target instanceof Document ? window.scrollY : this.target.scrollTop
     }
   }
 
-  get delta() {
-    if (this.cache) return this.cache
+  private getDelta(listener: IScrollListener) {
+    const initialPosition = this.initialPositions.get(listener)!
+    const currentPosition = this.currentPosition
 
-    const delta = {
-      x: this.originalPosition.x - this.currentPosition.x,
-      y: this.originalPosition.y - this.currentPosition.y
+    return {
+      x: initialPosition.x - currentPosition.x,
+      y: initialPosition.y - currentPosition.y
     }
-
-    this.cache = delta
-
-    return delta
   }
 
-  addHandler(dependencies: ScrollTarget[], handler: ScrollHandler) {
-    this.handlers.push({
-      dependencies,
-      handler
-    })
-  }
-
-  constructor(target: ScrollTarget) {
+  constructor(target: ScrollTarget, listener: IScrollListener) {
     this.target = target
 
-    this.originalPosition = this.currentPosition
-
-    ScrollManager.managers.set(target, this)
+    this.add(listener)
   }
 
-  activate() {
-    this.cache = null
+  get listenerCount(): number {
+    return this.listeners.length
+  }
 
-    this.handlers.forEach(({ dependencies, handler }) => {
-      handler(ScrollManager.getCumulativeDelta(dependencies))
+  add(listener: IScrollListener) {
+    this.listeners.push(listener)
+    this.initialPositions.set(listener, this.currentPosition)
+  }
+
+  remove(listener: IScrollListener) {
+    this.listeners.splice(this.listeners.indexOf(listener), 1)
+    this.initialPositions.delete(listener)
+  }
+
+  dispatch() {
+    this.listeners.forEach(listener => {
+      const delta = TargetManager.getCumulativeDelta(listener)
+
+      listener.handler(delta)
     })
   }
 }
 
-export default ScrollManager
+// const latestTarget
+let debounce = false
+const scrollHandler = (e: Event) => {
+  if (debounce) return
+
+  debounce = true
+
+  requestAnimationFrame(() => {
+    debounce = false
+
+    const target = e.target as ScrollTarget
+
+    if (!targetManagers.has(target)) return
+
+    targetManagers.get(target)!.dispatch()
+  })
+}
+
+export default {
+  add(listener: IScrollListener) {
+    listener.dependencies.forEach(target => {
+      if (!targetManagers.size) document.addEventListener('scroll', scrollHandler, true)
+
+      if (targetManagers.has(target)) targetManagers.get(target)!.add(listener)
+      else targetManagers.set(target, new TargetManager(target, listener))
+    })
+  },
+  remove(listener: IScrollListener) {
+    listener.dependencies.forEach(target => {
+      const manager = targetManagers.get(target)!
+
+      manager.remove(listener)
+
+      if (!manager.listenerCount) targetManagers.delete(target)
+    })
+
+    if (!targetManagers.size) document.removeEventListener('scroll', scrollHandler, true)
+  }
+}

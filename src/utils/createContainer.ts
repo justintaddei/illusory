@@ -1,6 +1,6 @@
 import { IllusoryElement } from '../'
 import { IIllusoryOptions } from '../options'
-import ScrollManager, { ScrollHandler } from './ScrollManager'
+import ScrollManager, { IScrollListener } from './ScrollManager'
 
 export interface IContainerControls {
   setOpacity(opacity: string): void
@@ -17,13 +17,16 @@ export function createContainer(opts: IIllusoryOptions): IContainerControls {
   container.style.zIndex = opts.zIndex.toString()
   container.style.transition = `opacity ${opts.duration} ${opts.easing} 0s`
 
-  const setPos: ScrollHandler = ({ x, y }) => {
-    container.style.transform = `translate(${x}px, ${y}px)`
-  }
-
   document.body.appendChild(container)
 
-  ScrollManager.add(opts.relativeTo, setPos)
+  const scrollListener: IScrollListener = {
+    dependencies: opts.relativeTo,
+    handler({ x, y }) {
+      container.style.transform = `translate(${x}px, ${y}px)`
+    }
+  }
+
+  ScrollManager.add(scrollListener)
 
   return {
     setOpacity(opacity) {
@@ -43,10 +46,11 @@ export function createContainer(opts: IIllusoryOptions): IContainerControls {
         await opts.beforeDetach(start, end, canceled)
       }
 
+      ScrollManager.remove(scrollListener)
+
       start.detach()
       end.detach()
 
-      ScrollManager.remove(opts.relativeTo, setPos)
       container.remove()
     }
   }
