@@ -15,29 +15,15 @@ document.removeEventListener = function(
 }
 
 describe('Add and removes handlers', () => {
-  const handler = () => {}
-  const targets = [document]
-
-  it('Adds handlers', () => {
-    ScrollManager.add(targets, handler)
-
-    expect(ScrollManager.managers.get(document)!.handlers[0]).toEqual({
-      dependencies: targets,
-      handler
-    })
-  })
+  const listener = { dependencies: [document], handler() {} }
 
   it('Added the event listener to document', () => {
+    ScrollManager.add(listener)
     expect(documentHasScrollListener).toBe(true)
   })
 
-  it('Removes handlers', () => {
-    ScrollManager.remove(targets, handler)
-
-    expect(ScrollManager.managers.get(document)).toBeUndefined()
-  })
-
   it('Removed the event listener from document', () => {
+    ScrollManager.remove(listener)
     expect(documentHasScrollListener).toBe(false)
   })
 })
