@@ -37,12 +37,12 @@ export class IllusoryElement {
   natural: HTMLElement | SVGElement
 
   /**
-   * The copy of `IllusoryElement.el` that is used to morph
+   * The clone of `this.natural`
    */
   clone: HTMLElement | SVGElement
 
   /**
-   * The BoundingClientRect of `this.el`
+   * The BoundingClientRect of `this.natural`
    */
   rect: DOMRect
 
@@ -231,9 +231,8 @@ export class IllusoryElement {
   }
 
   /**
-   * Appends `this.clone` as a child of `element`
-   * and hides the "real" element
-   * @param element The parent element
+   * Appends the clone as a child of `document.body`
+   * and hides the "natural" element.
    */
   attach() {
     this._setParent(document.body)
