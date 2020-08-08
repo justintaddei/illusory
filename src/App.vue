@@ -298,6 +298,18 @@ if (!canceled) {
       clone into DOM (this option only has effect on independent
       <code>IllusoryElement</code>s).
     </p>
+    <h4>relativeTo: <code>(HTMLElement | Document)[]</code></h4>
+    <small>default: <code>[document]</code></small>
+    <p>
+      An array of scrollable elements (including <code>document</code>).
+      Illusory will listen to <code>scroll</code> events on these targets and
+      update the position of the <code>IllusoryElement</code> so that it appears
+      to remain relative to the given container.
+    </p>
+    <blockquote>
+      Specifying an empty array (<code>[ ]</code>) will cause the
+      <code>IllusoryElement</code> to remain fixed in the viewport.
+    </blockquote>
 
     <h3>Options.element hooks</h3>
 
