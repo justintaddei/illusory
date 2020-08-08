@@ -1,4 +1,5 @@
 import { IllusoryElement } from '../IllusoryElement'
+import { parseTransformOrigin } from '../parsers/parseTransformOrigin'
 
 interface IDelta {
   x: number
@@ -19,14 +20,28 @@ interface IDeltaHandlerConfigMap {
 
 const DELTA_PASS_THROUGH_HANDLER: DeltaHandlerFunction = (_, __, thisStyle) => thisStyle
 
-function getDelta(from: IllusoryElement, to: IllusoryElement): IDelta {
+function getDelta(start: IllusoryElement, end: IllusoryElement): IDelta {
+  const origin = parseTransformOrigin(start.getStyle('transformOrigin'))
+
+  const scaleX = end.rect.width / start.rect.width
+  const scaleY = end.rect.height / start.rect.height
+
+  const inverseScaleX = start.rect.width / end.rect.width
+  const inverseScaleY = start.rect.height / end.rect.height
+
+  const originDisplacementX = (origin.x / start.rect.width) * (end.rect.width * (1 - inverseScaleX))
+  const originDisplacementY = (origin.y / start.rect.height) * (end.rect.height * (1 - inverseScaleY))
+
+  const x = end.rect.left - start.rect.left + originDisplacementX
+  const y = end.rect.top - start.rect.top + originDisplacementY
+
   return {
-    x: to.rect.left - from.rect.left,
-    y: to.rect.top - from.rect.top,
-    scaleX: to.rect.width / from.rect.width,
-    scaleY: to.rect.height / from.rect.height,
-    inverseScaleX: from.rect.width / to.rect.width,
-    inverseScaleY: from.rect.height / to.rect.height
+    x,
+    y,
+    scaleX,
+    scaleY,
+    inverseScaleX,
+    inverseScaleY
   }
 }
 

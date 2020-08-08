@@ -5,7 +5,7 @@ describe('Implements the correct public interface', () => {
 
   const illusoryElement = new IllusoryElement(el)
 
-  it('has the currect structure', () => {
+  it('has the correct structure', () => {
     expect(illusoryElement.natural).toBeInstanceOf(HTMLElement)
     expect(illusoryElement.clone).toBeInstanceOf(HTMLElement)
     expect(typeof illusoryElement.rect).toBe('object')

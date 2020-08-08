@@ -1,114 +1,106 @@
 import { IllusoryElement } from './IllusoryElement'
+import { DEFAULT_OPTIONS, IIllusoryOptions } from './options'
+import { createContainer, IContainerControls } from './utils/createContainer'
 import flushCSSUpdates from './utils/flushCSSUpdates'
-import { IOptions, DEFAULT_OPTIONS } from './options'
-import { createOpacityWrapper } from './utils/opacityWrapperNode'
-import './polyfill/Element.remove'
-import './polyfill/NodeList.forEach'
-
-function createIllusoryElement(element: HTMLElement | IllusoryElement, options: IOptions): IllusoryElement {
-  let illusoryElement: IllusoryElement
-
-  if (element instanceof IllusoryElement) {
-    illusoryElement = element
-
-    if (options.deltaHandlers) illusoryElement._appendDeltaHandlers(options.deltaHandlers)
-  } else illusoryElement = new IllusoryElement(element, options)
-
-  return illusoryElement
-}
 
 /**
- * Morph one element to another
- * @param from The element to morph from
- * @param to The element to morph to
+ * "Reactive" reference to a cancel method
  */
-async function illusory(
-  from: HTMLElement | IllusoryElement,
-  to: HTMLElement | IllusoryElement,
-  options?: Partial<IOptions>
-) {
-  const completeOptions: IOptions = {
-    ...DEFAULT_OPTIONS,
-    ...options
+interface ICancelRef {
+  cancel: () => void
+}
+
+interface IIllusoryControls {
+  /**
+   * Resolves when the animation is finished
+   * Resolves to `true` if the animation was not canceled
+   */
+  finished: Promise<boolean>
+  /**
+   * Immediately cancels the animation
+   */
+  cancel: () => void
+}
+
+type IllusoryTarget = HTMLElement | SVGElement | IllusoryElement
+
+function illusory(from: IllusoryTarget, to: IllusoryTarget, options?: Partial<IIllusoryOptions>): IIllusoryControls {
+  const opts = { ...DEFAULT_OPTIONS, ...options }
+
+  const convert = (target: IllusoryTarget) =>
+    target instanceof IllusoryElement ? target : new IllusoryElement(target, opts.element)
+
+  const start = convert(from)
+  const end = convert(to)
+
+  const container = createContainer(opts)
+
+  container.add(start, end)
+
+  container.setOpacity(start.getStyle('opacity'))
+
+  const ref: ICancelRef = {
+    cancel: () => {
+      throw new Error('Cancel called before assigned')
+    } // Set later in `animate`
   }
 
-  if (completeOptions.compositeOnly) {
-    if (!completeOptions.deltaHandlers) completeOptions.deltaHandlers = {}
-
-    const nonCompositeProperties = [
-      'borderTopLeftRadius',
-      'borderTopRightRadius',
-      'borderBottomLeftRadius',
-      'borderBottomRightRadius'
-    ]
-
-    // Don't override user-provided handlers
-    for (const prop of nonCompositeProperties)
-      if (!completeOptions.deltaHandlers[prop]) completeOptions.deltaHandlers[prop] = false
+  return {
+    finished: animate(start, end, container, opts, ref),
+    cancel: () => {
+      ref.cancel()
+    }
   }
+}
 
-  // Convert the `HTMLElement` to Illusory if needed.
-  const start = createIllusoryElement(from, completeOptions)
-  const end = createIllusoryElement(to, completeOptions)
+function animate(
+  start: IllusoryElement,
+  end: IllusoryElement,
+  container: IContainerControls,
+  opts: IIllusoryOptions,
+  cancelRef: ICancelRef
+): Promise<boolean> {
+  return new Promise(async finished => {
+    let canceled = false
+    const cancel = async () => {
+      canceled = true
+      await container.destroy(start, end, canceled)
+      finished(canceled)
+    }
+    cancelRef.cancel = cancel
 
-  const startOpacity = start.getStyle('opacity')
-  const endOpacity = end.getStyle('opacity')
+    end.hide()
+    end._to(start)
 
-  // We to append the clones to a wrapper element if the opacity is less than 1
-  // or there will be a "pop" at the start and end
-  const needsWrapperElement = startOpacity !== '1' || endOpacity !== '1'
+    // Before animate hook
+    if (typeof opts.beforeAnimate === 'function') await Promise.resolve(opts.beforeAnimate(start, end))
 
-  const parent = needsWrapperElement ? createOpacityWrapper(startOpacity, completeOptions) : document.body
+    if (canceled) return
 
-  // beforeAnimate hook
-  if (typeof options?.beforeAttach === 'function') {
-    await Promise.resolve(options.beforeAttach(start, end))
-  }
+    start._enableTransitions(opts)
+    end._enableTransitions(opts)
 
-  start.setStyle('opacity', 1)
-  end.setStyle('opacity', 1)
+    flushCSSUpdates(start, end)
 
-  start._setParent(parent)
-  end._setParent(parent)
+    start._to(end)
+    end._to(end)
 
-  end.hide()
-  end._to(start)
+    // If the`end` element has a transparent or semi-transparent
+    // background, we have to fade out the `start` element because otherwise it will be visible
+    // until it is removed from the DOM. Causing an odd "pop" effect.
+    if (!end._ignoreTransparency && (end._hasTransparentBackground() || opts.compositeOnly)) start.hide()
 
-  // beforeAnimate hook
-  if (typeof options?.beforeAnimate === 'function') {
-    await Promise.resolve(options.beforeAnimate(start, end))
-  }
+    end.show()
 
-  start._enableTransitions(completeOptions)
-  end._enableTransitions(completeOptions)
+    container.setOpacity(end.getStyle('opacity'))
 
-  flushCSSUpdates(start, end)
+    await end.waitFor('any')
 
-  start._to(end)
-  end._to(end)
+    if (canceled) return
 
-  // If the`end` element has a transparent or semi-transparent
-  // background, we have to fade out the `start` element because otherwise it will be visible
-  // until it is removed from the dom causing a weird
-  // "pop" effect.
-  if (!end._ignoreTransparency && (end._hasTransparentBackground() || completeOptions.compositeOnly)) start.hide()
-  end.show()
-
-  if (needsWrapperElement) parent.style.opacity = endOpacity
-
-  await end.waitFor('any')
-
-  if (typeof options?.beforeDetach === 'function') {
-    start._disableTransitions()
-    end._disableTransitions()
-    start.hide()
-    await Promise.resolve(options.beforeDetach(start, end))
-  }
-
-  start.detach()
-  end.detach()
-
-  if (needsWrapperElement) parent.remove()
+    await container.destroy(start, end, canceled)
+    finished(canceled)
+  })
 }
 
 export { illusory, IllusoryElement }

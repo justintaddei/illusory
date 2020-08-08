@@ -6,10 +6,7 @@ describe('Builds correct transition string', () => {
       buildTransitionString({
         duration: '3s',
         easing: 'ease-in-out',
-        compositeOnly: false,
-        includeChildren: false,
-        ignoreTransparency: ['img'],
-        zIndex: 1
+        compositeOnly: false
       })
     ).toBe('all 3s ease-in-out 0s')
   })
@@ -18,10 +15,7 @@ describe('Builds correct transition string', () => {
       buildTransitionString({
         duration: '3s',
         easing: 'ease-in-out',
-        compositeOnly: true,
-        includeChildren: false,
-        ignoreTransparency: ['img'],
-        zIndex: 1
+        compositeOnly: true
       })
     ).toBe('transform 3s ease-in-out 0s, opacity 3s ease-in-out 0s')
   })

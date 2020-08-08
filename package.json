@@ -13,10 +13,10 @@
     "animation",
     "element transition"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
-  "unpkg": "dist/iife/index.js",
-  "types": "types/",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.js",
+  "types": "dist/types",
   "files": [
     "dist/**/*",
     "types/**/*"
@@ -24,10 +24,8 @@
   "scripts": {
     "test": "jest --no-cache",
     "build": "rollup --config",
-    "build:docs": "tsc ./docs/index.js --out ./docs/index.es5.js --allowJs --lib es2015",
     "dev": "npm run build -- --watch",
-    "dev:docs": "npm run build:docs -- --watch",
-    "serve": "live-server ./docs --mount=/illusory.js:./dist/iife/index.js --no-browser",
+    "dev:link": "npm link",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
@@ -47,16 +45,21 @@
   },
   "homepage": "https://github.com/justintaddei/illusory#readme",
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^8.1.0",
     "@types/jest": "^25.2.3",
+    "eslint": "^7.5.0",
     "jest": "^25.5.4",
     "live-server": "^1.2.1",
     "prettier": "^1.19.1",
-    "rollup": "^2.13.1",
+    "rollup": "^2.23.0",
     "rollup-plugin-typescript2": "^0.27.1",
     "rollup-plugin-uglify": "^6.0.4",
     "ts-jest": "^25.5.1",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "rematrix": "^0.7.0"
   }
 }

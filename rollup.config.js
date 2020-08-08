@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2'
 import pkg from './package.json'
 import { uglify } from 'rollup-plugin-uglify'
+import resolve from '@rollup/plugin-node-resolve'
 
 export default [
   {
@@ -14,7 +15,8 @@ export default [
             declarationDir: pkg.types
           }
         }
-      })
+      }),
+      resolve()
     ],
 
     output: [
@@ -35,28 +37,8 @@ export default [
             declaration: false
           }
         }
-      })
-    ],
-
-    output: [
-      {
-        file: pkg.main,
-        format: 'cjs'
-      }
-    ]
-  },
-  {
-    input: './src/index.ts',
-
-    plugins: [
-      typescript({
-        tsconfigOverride: {
-          compilerOptions: {
-            target: 'es5',
-            declaration: false
-          }
-        }
       }),
+      resolve(),
       uglify({
         sourcemap: false,
         output: {
@@ -67,7 +49,7 @@ export default [
 
     output: [
       {
-        file: pkg.unpkg,
+        file: pkg.main,
         format: 'iife',
         name: 'window',
         extend: true
