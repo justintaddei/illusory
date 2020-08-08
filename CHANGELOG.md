@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (Unreleased)
+## 2.0.0 (August 8th, 2020)
 
 **Breaking changes**
 - Options related to IllusoryElements specified when calling `illusory` are now specified in options.element instead of as top-level options.
