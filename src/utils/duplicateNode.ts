@@ -53,6 +53,8 @@ function copyStyles(source: HTMLElement | SVGElement, target: HTMLElement | SVGE
 
     target.style.cssText = mockCssText
   }
+
+  target.style.transformOrigin = styles.transformOrigin
 }
 
 /**

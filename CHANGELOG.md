@@ -1,5 +1,10 @@
 # Changelog
 
+#### 2.0.1 (September 8th, 2020)
+
+**Bug fixes**  
+- Fixed a bug caused by Safari returning malformed `cssText` from an element's computed style (see [#18](https://github.com/justintaddei/illusory/issues/18))
+
 ## 2.0.0 (August 8th, 2020)
 
 **Breaking changes**
