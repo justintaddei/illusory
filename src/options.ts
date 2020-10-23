@@ -58,11 +58,11 @@ export interface IIllusoryElementOptions {
   attachImmediately?: boolean
 }
 
-export interface IIllusoryOptions {
+export interface IIllusoryOptions<T = Partial<IIllusoryElementOptions>> {
   /**
    * Options pertaining to `IllusoryElement`s
    */
-  element: IIllusoryElementOptions
+  element: T
   /**
    * By default, illusory will animate `transform`, `opacity`,
    * and `border-radius` (`background` is not animated.
@@ -118,7 +118,7 @@ export interface IIllusoryOptions {
   relativeTo: (HTMLElement | Document)[]
 }
 
-export const DEFAULT_OPTIONS: IIllusoryOptions = {
+export const DEFAULT_OPTIONS: IIllusoryOptions<IIllusoryElementOptions> = {
   element: {
     includeChildren: true,
     ignoreTransparency: ['img']

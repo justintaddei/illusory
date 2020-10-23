@@ -1,5 +1,5 @@
 import { IllusoryElement } from './IllusoryElement'
-import { DEFAULT_OPTIONS, IIllusoryOptions } from './options'
+import { DEFAULT_OPTIONS, IIllusoryElementOptions, IIllusoryOptions } from './options'
 import { createContainer, IContainerControls } from './utils/createContainer'
 import flushCSSUpdates from './utils/flushCSSUpdates'
 
@@ -103,4 +103,4 @@ function animate(
   })
 }
 
-export { illusory, IllusoryElement }
+export { illusory, IllusoryElement, IIllusoryOptions, IIllusoryElementOptions }
