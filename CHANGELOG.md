@@ -1,5 +1,10 @@
 # Changelog
 
+#### 2.0.2 (October 22nd, 2020)
+
+**Bug fixes**
+- FIxed incorrect Typescript exports
+
 #### 2.0.1 (September 8th, 2020)
 
 **Bug fixes**  
