@@ -10,7 +10,7 @@
 **Breaking changes**
 - Options related to IllusoryElements specified when calling `illusory` are now specified in options.element instead of as top-level options.
 - `illusory` now resolves to a "controls object" instead of a boolean. (See [#13](https://github.com/justintaddei/illusory/issues/13))
-- `autoAttach` is not named `attachImmediately`
+- `autoAttach` is now named `attachImmediately`
 - `beforeAttach` hook has been removed in favor of `beforeAnimate` since they were essentially the same thing.
 - `deltaHandlers` API has been removed. It complicated the code and I didn't see any practical use for it.
 
