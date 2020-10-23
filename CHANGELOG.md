@@ -13,6 +13,7 @@
 - `autoAttach` is now named `attachImmediately`
 - `beforeAttach` hook has been removed in favor of `beforeAnimate` since they were essentially the same thing.
 - `deltaHandlers` API has been removed. It complicated the code and I didn't see any practical use for it.
+- (Typescript users only) renamed `IOptions` export to `IIllusoryOptions`.
 
 **Features**
 - illusory now supports transitioning between elements with preexisting CSS transforms applied to them (must have the same `transform-origin` set) (See [#14](https://github.com/justintaddei/illusory/issues/14)).
