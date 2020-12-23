@@ -33,6 +33,12 @@ function illusory(from: IllusoryTarget, to: IllusoryTarget, options?: Partial<II
   const start = convert(from)
   const end = convert(to)
 
+  // Override existing z-index.
+  // The `zIndex` option is applied to
+  // the container element so this is okay.
+  start.setStyle('zIndex', 1)
+  end.setStyle('zIndex', 2)
+
   const container = createContainer(opts)
 
   container.add(start, end)

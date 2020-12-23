@@ -1,5 +1,5 @@
 export type FilterFunction = (attributeName: string) => boolean
-export type CloneProcessorFunction = (node: Node, depth: number) => Node | void
+export type CloneProcessorFunction = (node: Node, depth: number) => Node | null
 
 interface ICloneOptions {
   includeChildren?: boolean

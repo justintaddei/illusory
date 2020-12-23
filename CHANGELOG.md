@@ -1,5 +1,10 @@
 # Changelog
 
+#### 2.0.3 (December 23rd, 2020)
+
+**Bug fixes**
+- Fixed an issue that sometimes resulted in a visual flash because the "to" element appeared under the "from" element.
+
 #### 2.0.2 (October 22nd, 2020)
 
 **Bug fixes**
