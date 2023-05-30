@@ -1,13 +1,12 @@
 # illusory <!-- omit in toc -->
 
-![GitHub build status](https://img.shields.io/github/workflow/status/justintaddei/illusory/Tests/master?logo=github)
+[![Tests](https://github.com/justintaddei/illusory/actions/workflows/tests.yml/badge.svg)](https://github.com/justintaddei/illusory/actions/workflows/tests.yml)
 ![Open issues](https://img.shields.io/github/issues-raw/justintaddei/illusory.svg?style=flat)
 ![npm version](https://img.shields.io/npm/v/illusory.svg?style=flat)
 ![downloads](https://img.shields.io/npm/dt/illusory.svg?style=flat&label=npm+installs)
 ![license](https://img.shields.io/npm/l/illusory.svg?style=flat)
 ![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)
 ![language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat)
-![Status](https://img.shields.io/badge/status-awesome-red.svg?style=flat)
 
 Seamlessly morph one element into another.  
 [**Demo**](https://justintaddei.github.io/illusory/)
