@@ -51,7 +51,7 @@
     "jest": "^25.5.4",
     "live-server": "^1.2.1",
     "prettier": "^1.19.1",
-    "rollup": "^2.23.0",
+    "rollup": "^3.29.5",
     "rollup-plugin-typescript2": "^0.27.1",
     "rollup-plugin-uglify": "^6.0.4",
     "ts-jest": "^25.5.1",
